@@ -15,8 +15,11 @@ const Home = ()=>{
         <div className="row home-hero">
         <div className="col-lg-8 ">
         <div className="video-banner center column">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/Hgc07_BX4_8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;" allowfullscreen></iframe>
+        <div className="video-info">
         <h1>Streaming Now!!</h1>
-        <p>Rohini,... are watching</p>
+        <p>3 are watching</p>
+        </div>
         </div>
         <div className="center stream-choice">
         <button className="stream-option center"><img src={streamcam}/>&nbsp;&nbsp;Start stream</button>
@@ -27,17 +30,32 @@ const Home = ()=>{
         </div>
         <div className="col-lg-4">
 
-        <div className="friends-list">
+        <div className="friends-list backdrop-blur">
         <table class="table">
   <thead>
     <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Status</th>
+      <th>Your friendlist</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><i class="far fa-user-circle"></i>Rohini</td>
+      <td><i class="far fa-user-circle"></i>Srikanth</td>
+      <td><img src={active}/></td>
+    </tr>
+    <tr>
+      <td><i class="far fa-user-circle"></i>Neeraj</td>
+      <td><img src={active}/></td>
+    </tr>
+    <tr>
+      <td><i class="far fa-user-circle"></i>Manikanth</td>
+      <td><img src={active}/></td>
+    </tr>
+    <tr>
+      <td><i class="far fa-user-circle"></i>Santosh</td>
+      <td><img src={active}/></td>
+    </tr>
+    <tr>
+      <td><i class="far fa-user-circle"></i>Vinay</td>
       <td><img src={active}/></td>
     </tr>
   </tbody>
