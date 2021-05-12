@@ -8,6 +8,8 @@ import {BASE_URL} from '../../constants/index'
 import ReactScrollableFeed from 'react-scrollable-feed'
 import "../../css/room.css"
 import axios from 'axios';
+import receive from "../../sounds/sendmessage.mp3"
+import send from "../../sounds/recievemessage.mp3"
 
 const socket = io(BASE_URL);
 
@@ -45,6 +47,17 @@ const Room = (props) => {
         socket.on("message", payload => {
             console.log(chat, "chat");
             console.log(payload, "payload");
+            if(payload.user===tokenId)
+            {
+               var msg = new Audio(send);  
+               console.log(msg);
+                msg.play();
+            }
+            else{
+               var msg = new Audio(receive);  
+               console.log(msg);
+                msg.play();
+            }
             setChat([...chat, payload]);
         })
         return () => {
