@@ -1,0 +1,84 @@
+form{
+    display: flex;
+}
+.chat-main{
+    background-color:#e3e6e3;
+}
+.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.chat-area{
+    padding:90px 20px;
+    height: 100vh;
+}
+.stream-area{
+    padding: 100px 20px 40px 50px;
+    height: 100vh;
+}
+.chat-box{
+    height: 690px;
+    width: 100%;
+    overflow-y: scroll;
+    background-color: #fdfdfd;
+    border-radius: 20px;
+    position: relative;
+    padding-top: 20px;
+    
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+.video-main{
+    height: 650px;
+    width: 100%;
+    background-color: black;
+    border-radius: 20px;
+}
+.messagebox{
+    position: relative;
+    width: 100%;
+    bottom:0;
+}
+.messagebox form{
+    width: 100%;
+    box-shadow: 0px 3px 14px -4px rgb(0 0 0 / 75%);
+}
+.messagebox button{
+    height: 48px;
+    width: 20%;
+    border: none;
+    background-color: #f8f9fa;
+}
+.messagebox input{
+    height: 48px;
+    width: 80%;
+    border: none;
+    padding:0 20px; 
+}
+.messages{
+    position: relative;
+    padding:0 20px;
+    width: 100%;
+    overflow-y: scroll;
+}
+.usermsg{
+    padding: 8px 20px;
+    background-color: #e7e8e7;
+    border-radius: 48px;
+    margin-bottom: 8px;
+    display: table;
+
+}
+.usermsg h6{
+    margin: 0;
+}
+input:focus
+{
+ outline: none;
+}
+iframe{
+    border: none;
+    border-radius: 20px;
+}

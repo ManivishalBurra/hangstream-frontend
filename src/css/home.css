@@ -1,3 +1,6 @@
+body{
+    background-color: #e3e6e3;
+}
 .video-banner{
     height: 500px;
     width: 100%;
@@ -10,6 +13,9 @@
 .video-banner:hover>.video-info{
     display: none;
 }
+.ytp-title-channel{
+    display: none;
+}
 .video-info{
     position: absolute;
 }
@@ -17,7 +23,7 @@
     color: rgba(0, 0,0, .6);
 }
 .home-hero{
-    padding:50px 80px;
+    padding:120px 80px 0;
 }
 .stream-option{
     transition: 0.6s;

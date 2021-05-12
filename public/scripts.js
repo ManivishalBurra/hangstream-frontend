@@ -14,7 +14,6 @@
 			}
 		});
 	});
-
 	//Animation
 
 	$(document).ready(function() {
