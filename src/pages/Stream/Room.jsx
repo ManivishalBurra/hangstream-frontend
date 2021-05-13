@@ -6,6 +6,7 @@ import SendIcon from '@material-ui/icons/Send';
 import { UserRoom } from '../../userContext/userdetails'
 import {BASE_URL} from '../../constants/index'
 import ReactScrollableFeed from 'react-scrollable-feed'
+import ReactPlayer from 'react-player/youtube'
 import "../../css/room.css"
 import axios from 'axios';
 import receive from "../../sounds/sendmessage.mp3"
@@ -20,6 +21,8 @@ const Room = (props) => {
     const roomid = props.match.params.roomid;
     const tokenId = localStorage.getItem("tokenId");
     const [banner,setBanner] = useState({});
+    const [play,setPlay] = useState(false)
+    const [time,setTime] = useState(0);
     useEffect(() => {
         if (!tokenId) {
             setRoomId(roomid);
@@ -40,8 +43,13 @@ const Room = (props) => {
             }
           })
     }, []);
+    
     const [message, setMessage] = useState('');
     const [chat, setChat] = useState([]);
+    // const [userTime,setUserTime] = useState(0);
+    const [syncTime,setSyncTime] = useState([]);
+    var arr=[];
+
     var user = localStorage.getItem("tokenId");
     useEffect(() => {
         socket.on("message", payload => {
@@ -59,11 +67,21 @@ const Room = (props) => {
                 msg.play();
             }
             setChat([...chat, payload]);
+            console.log(chat,"chat");
         })
+
         return () => {
             socket.off("message");
         };
     });
+    useEffect(()=>{
+        socket.on("time",payload=>{
+            console.log(payload,"payload");
+        })
+    },[])
+    function SendTime(time){
+        console.log({time,user});
+    }
 
     const sendMessage = (e) => {
         e.preventDefault();
@@ -78,13 +96,38 @@ const Room = (props) => {
         return <div ref={elementRef} />;
       };
 
+    function Progress(progress){
+        setPlay(true);
+        var userTime=Math.floor(progress.playedSeconds);
+        console.log( {userTime,user} );
+        socket.emit('time',  {userTime,user} );
+    }
+
+    function Duration(duration){
+        console.log(duration);
+    }
+
+    function End(){
+        alert("videoended")
+    }
+
     return (
         <>
             <Navbar />
             <div className="row chat-main">
                 <div className="col-lg-9 stream-area">
                     <div className="video-main">
-                    <iframe src={`https://drive.google.com/file/d/${banner.movieUrl}/preview`} width="100%" height="100%"></iframe>
+                    <ReactPlayer  
+                    width="100%" 
+                    height="100%" 
+                    url={banner.movieUrl}
+                    controls
+                    playing={play}    
+                    progressInterval="4000"
+                    onProgress={Progress}
+                    onDuration={Duration}
+                    onEnded={End}
+                    />
                     </div>
                 </div>
 

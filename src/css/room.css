@@ -66,7 +66,7 @@ form{
 .usermsg{
     padding: 8px 20px;
     background-color: #e7e8e7;
-    border-radius: 48px;
+    border-radius: 23px;
     margin-bottom: 8px;
     display: table;
 
@@ -78,7 +78,7 @@ input:focus
 {
  outline: none;
 }
-iframe{
+iframe,object{
     border: none;
     border-radius: 20px;
 }

@@ -10,7 +10,12 @@ import "../../css/login.css";
 
 const Login = ()=>{
     const history = useHistory();
-    
+    useEffect(()=>{
+        var tokenId=localStorage.getItem("tokenId")
+        if(tokenId){
+            history.push(`/home/${tokenId}`);
+        }
+    })
 
     const responseSuccessGoogle=(response)=>{        
        axios.post(`${BASE_URL}/credentials`,{...response.profileObj}).then((res)=>{
