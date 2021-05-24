@@ -1,5 +1,6 @@
-import React,{useState,useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link, useHistory } from "react-router-dom";
+import ReactPlayer from 'react-player'
 import MicIcon from '@material-ui/icons/Mic';
 import GroupIcon from '@material-ui/icons/Group';
 import VideocamIcon from '@material-ui/icons/Videocam';
@@ -7,74 +8,78 @@ import streamcam from "../../images/streamcam.png";
 import active from '../../images/active.png';
 import Navbar from '../../components/Navbar/navbar'
 import Box from '../../components/Box/Box'
-import {UserRoom} from '../../userContext/userdetails'
-import {BASE_URL} from '../../constants/index'
+import { UserRoom } from '../../userContext/userdetails'
+import { BASE_URL } from '../../constants/index'
 import "../../css/home.css";
 import axios from 'axios';
 
 const Home = (props) => {
   const history = useHistory();
-  var {roomId,setRoomId} = useContext(UserRoom);
-  
-  const [boxState,setBoxState] = useState(false);
+  var { roomId, setRoomId } = useContext(UserRoom);
+
+  const [boxState, setBoxState] = useState(false);
   const tokenId = localStorage.getItem("tokenId");
-  const [banner,setBanner] = useState({});
-  useEffect(()=>{
-    
-    if(!tokenId){
+  const [banner, setBanner] = useState({});
+  useEffect(() => {
+
+    if (!tokenId) {
       history.push("/");
     }
-    else if(roomId){
-      axios.post(`${BASE_URL}/home/getinfobyroomid`,{roomid:roomId}).then((res)=>{
+    else if (roomId) {
+      axios.post(`${BASE_URL}/home/getinfobyroomid`, { roomid: roomId }).then((res) => {
 
-        if(res.data){
-          setBanner({...res.data[0]});
+        if (res.data) {
+          setBanner({ ...res.data[0] });
           console.log(banner);
         }
-        else{
-          history.push("/"); 
+        else {
+          history.push("/");
         }
       })
     }
-    else{
-      axios.post(`${BASE_URL}/home/getinfo`,{id:props.match.params.googleId}).then((res)=>{
-        
-        if(res.data[0].id===props.match.params.googleId){
-          setBanner({...res.data[0]});
+    else {
+      axios.post(`${BASE_URL}/home/getinfo`, { id: props.match.params.googleId }).then((res) => {
+
+        if (res.data[0].id === props.match.params.googleId) {
+          setBanner({ ...res.data[0] });
           console.log(banner);
         }
-        else{
-          history.push("/"); 
+        else {
+          history.push("/");
         }
       })
     }
-  },[])
+  }, [])
 
-  const [friends,setFriends]=[banner.friends];
+  const [friends, setFriends] = [banner.friends];
 
-  function display(state){
+  function display(state) {
     setBoxState(false);
   }
 
-  function CreateRoomDiv(){
+  function CreateRoomDiv() {
     setBoxState(true);
   }
-  function Joinstream(){
-    
-    axios.post(`${BASE_URL}/home/addfriend`,{id:props.match.params.googleId,roomId:banner.roomId}).then((res)=>{
-        if(res.data){
-          history.push(`/room/${banner.roomId}`)
-        }
+  function Joinstream() {
+
+    axios.post(`${BASE_URL}/home/addfriend`, { id: props.match.params.googleId, roomId: banner.roomId }).then((res) => {
+      if (res.data) {
+        history.push(`/room/${banner.roomId}`)
+      }
     })
   }
-  
+
   return (
     <>
       <Navbar />
       <div className="row home-hero">
         <div className="col-lg-8 ">
           <div className="video-banner center column">
-            <iframe width="100%" height="100%" src={`https://www.youtube-nocookie.com/embed/${banner.banner}?modestbranding=1&controls=0&rel=0&showinfo=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+            <ReactPlayer
+              width="100%"
+              height="100%"
+              url={banner.banner}
+            />
             <div className="video-info">
               <h1>Streaming Now!!</h1>
               <p>3 are watching</p>
@@ -97,14 +102,14 @@ const Home = (props) => {
                 </tr>
               </thead>
               <tbody>
-              {
-              friends&&  
-              friends.map((friends,index)=>{
-                return(<tr key={index}>
-                  <td><i class="far fa-user-circle"></i>{friends}</td>
-                  <td><img src={active} /></td>
-                </tr>);
-              })}    
+                {
+                  friends &&
+                  friends.map((friends, index) => {
+                    return (<tr key={index}>
+                      <td><i class="far fa-user-circle"></i>{friends}</td>
+                      <td><img src={active} /></td>
+                    </tr>);
+                  })}
 
               </tbody>
             </table>
@@ -113,7 +118,7 @@ const Home = (props) => {
         </div>
       </div>
       {boxState &&
-      <Box display={display}/>
+        <Box display={display} />
       }
     </>
   );
