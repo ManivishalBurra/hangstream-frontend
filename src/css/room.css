@@ -59,7 +59,7 @@ form{
 }
 .messages{
     position: relative;
-    padding:0 20px;
+    padding:0 5px;
     width: 100%;
     overflow-y: scroll;
 }
@@ -81,4 +81,19 @@ input:focus
 iframe,object{
     border: none;
     border-radius: 20px;
+}
+.typing{
+    font-size: 15px;
+    color: darkgrey;
+}
+.chat-comb{
+    display: flex;
+    align-items: center;
+}
+.chat-comb img{
+    width: 16px;
+    height: 16px;
+    margin-left: 3px;
+    margin-right: 3px;
+    border-radius: 100%;
 }

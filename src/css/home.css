@@ -102,6 +102,10 @@ tr td:nth-child(2),tr th:nth-child(2){
         backdrop-filter: blur(20px)
     }
 }
+button:focus{
+    outline: none;
+}
+
 
 ::-webkit-scrollbar {
     width: 0px;
