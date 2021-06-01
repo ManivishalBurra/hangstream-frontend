@@ -112,24 +112,24 @@ const Room = (props) => {
 
     }, []);
 
-    // useEffect(()=>{
-    //     socket.on('timing',payload=>{
+    useEffect(()=>{
+        socket.on('timing',payload=>{
            
-    //     if(user!==payload.ID){
+        if(user!==payload.ID){
            
-    //        playTime= myvideo.current.getCurrentTime();
-    //        var d = new Date();
-    //        localTime=d.toLocaleTimeString();
-    //        var differenceInTime = duration.time(localTime,payload.localTime);
-    //        var syncDifference = Number(differenceInTime.minutes)*60+Number(differenceInTime.seconds);
-    //        var streamerPlayTime = Number(payload.playTime)+syncDifference;
-    //        console.log(Math.abs(streamerPlayTime-playTime));
-    //        if(Math.abs(streamerPlayTime-playTime)>0.7){
-    //        myvideo.current.seekTo(streamerPlayTime,'seconds');
-    //        }
-    //     }
-    //     })
-    // })
+           playTime= myvideo.current.getCurrentTime();
+           var d = new Date();
+           localTime=d.toLocaleTimeString();
+           var differenceInTime = duration.time(localTime,payload.localTime);
+           var syncDifference = Number(differenceInTime.minutes)*60+Number(differenceInTime.seconds);
+           var streamerPlayTime = Number(payload.playTime)+syncDifference;
+           console.log(Math.abs(streamerPlayTime-playTime));
+           if(Math.abs(streamerPlayTime-playTime)>0.7){
+           myvideo.current.seekTo(streamerPlayTime,'seconds');
+           }
+        }
+        })
+    },[]);
 
     function TypeMessage(e){
         setMessage(e.target.value);
@@ -139,21 +139,21 @@ const Room = (props) => {
             setTyping("");
         }
         else{
-        //socket.emit("typing",{name,user,roomId});
+        socket.emit("typing",{name,user,roomId});
         }
     }
-    // useEffect(()=>{
-    //     socket.on("typing",payload=>{
+    useEffect(()=>{
+        socket.on("typing",payload=>{
             
-    //         if(payload.user!==tokenId){
-    //          var str=payload.name.toLowerCase().split(" ");   
-    //          setTyping(str[0] + " is typing...");
-    //          setTimeout(function(){ setTyping("") }, 2000);
-    //         }
+            if(payload.user!==tokenId){
+             var str=payload.name.toLowerCase().split(" ");   
+             setTyping(str[0] + " is typing...");
+             setTimeout(function(){ setTyping("") }, 2000);
+            }
 
-    //     })
+        })
         
-    // },[])
+    },[])
 
     const sendMessage = (e) => {
         e.preventDefault();
@@ -180,7 +180,7 @@ const Room = (props) => {
         console.log(banner.id);
         var ID = banner.id;
         if(tokenId===banner.id){
-        //socket.emit('timing',{playTime,roomId,localTime,ID})
+        socket.emit('timing',{playTime,roomId,localTime,ID})
         }
         
     }

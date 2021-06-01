@@ -1,6 +1,7 @@
 import React,{useEffect,useContext} from 'react';
 import GoogleLogin from "react-google-login";
 import {useHistory} from "react-router-dom";
+import { ToastContainer, toast } from "material-react-toastify";
 import axios from 'axios';
 
 import {BASE_URL} from '../../constants/index';
@@ -19,13 +20,20 @@ const Login = ()=>{
 
     const responseSuccessGoogle=(response)=>{        
        axios.post(`${BASE_URL}/credentials`,{...response.profileObj}).then((res)=>{
-            
+            console.log(res.data);
             localStorage.setItem("tokenId",res.data.id);
             history.push(`/home/${res.data.id}`);
         })
     }
     const responseErrorGoogle=(response)=>{
-        console.log(response);
+        toast.error(`${response.details}`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            });
     }
 
 
@@ -44,6 +52,17 @@ const Login = ()=>{
             cookiePolicy={"single_host_origin"}
             />
         </div>
+        <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
         </div>
         </>
     );
