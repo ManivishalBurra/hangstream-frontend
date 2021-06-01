@@ -14,7 +14,7 @@ function Render() {
       <Switch>
       <Route exact path="/home/:googleId" component={Home} />
       <Route  path="/room/:roomid" component={Room} />
-      <Route  path="/" component={Movies} />
+      <Route  path="/movies" component={Movies} />
       <Route  path="/" component={Login} />
 
       </Switch>
