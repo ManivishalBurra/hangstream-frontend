@@ -46,7 +46,7 @@ const Login = ()=>{
             <img src={logo}/>
             <h4>Hangstream</h4>
             <GoogleLogin
-            clientId="580863925164-oia6u7ik0d615te3187o7dufds2j6m93.apps.googleusercontent.com"
+            clientId="857139218088-qhn8a18fashrmakebvo4u0fi25uooqg1.apps.googleusercontent.com"
             buttonText="Login to let fun begin"
             onSuccess={responseSuccessGoogle}
             onFailure={responseErrorGoogle}
