@@ -26,6 +26,7 @@ const Login = ()=>{
         })
     }
     const responseErrorGoogle=(response)=>{
+        console.log(response);
         toast.error(`${response.details}`, {
             position: "top-right",
             autoClose: 3000,
