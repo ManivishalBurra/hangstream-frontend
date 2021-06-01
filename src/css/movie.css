@@ -6,11 +6,11 @@
     margin: 0;
 }
 .movie-main .col-lg-3{
-    transition: 2s;
+    transition: 1s;
     height: 200px;
 }
 .movie-tile{
-    transition: 2s;
+    transition: 1.5s;
     position: relative;
     height: 100%;
     width: 100%;
@@ -18,7 +18,7 @@
     overflow: hidden;
 }
 .movie-tile:hover{
-    transition: 2s;
+    transition: 1.5s;
     height: 300px;
     width: 500px;
     position: absolute;

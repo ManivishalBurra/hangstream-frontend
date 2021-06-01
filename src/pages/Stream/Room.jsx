@@ -129,7 +129,7 @@ const Room = (props) => {
            }
         }
         })
-    })
+    },[]);
 
     function TypeMessage(e){
         setMessage(e.target.value);
