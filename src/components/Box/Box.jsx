@@ -17,7 +17,7 @@ const Box = (props) => {
         console.log(e);
         e.preventDefault();
         const roomid = uuidv4();
-        axios.post(`${BASE_URL}/home/roomstream`,{url:url,movieName:movieName,banner:banner,roomid:roomid,id:tokenId}).then((res)=>{
+        axios.post(`${BASE_URL}/home/roomstream`,{url:url,movieName:movieName,banner:banner,roomid:roomid,id:tokenId,source:"admin"}).then((res)=>{
             if(res.data){
             setRoomId(roomid);    
             history.push(`/room/${roomid}`);

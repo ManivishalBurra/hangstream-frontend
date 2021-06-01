@@ -69,7 +69,6 @@ const Home = (props) => {
       }
     })
   }
-
   return (
     <>
       <Navbar />
@@ -80,6 +79,10 @@ const Home = (props) => {
               width="100%"
               height="100%"
               url={banner.banner}
+              controls={false}
+              playing={true}
+              loop={true}
+
             />
             <div className="video-info">
               <h1>Streaming Now!!</h1>
