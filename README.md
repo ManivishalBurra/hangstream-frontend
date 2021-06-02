@@ -20,6 +20,7 @@ This streaming web app project is our hardwork and effort for all our beloved fr
 Log in system we use here is google login system and we dont use any password verification that drags all the time to get into the real fun with your friends.
 
 There are 3 categories in this web app
+
 1. Home
 2. Streamflix
 3. Account
@@ -28,10 +29,11 @@ There are 3 categories in this web app
 
 In this page, you will have a freedom to stream or join to your own streamed movie or your friends if you started any, and friends list that shows persons joined in your stream from the begining
 
-![image](https://user-images.githubusercontent.com/72870001/120440272-ffe03700-c3a0-11eb-948a-abcb82ba7c25.png)
+![image](https://user-images.githubusercontent.com/72870001/120441825-982aeb80-c3a2-11eb-948f-0225f0d4b8f8.png)
 
 
 In the above image you can see a ### `stream now` button that has 3 options 
+
 1.movie URL
 2.movie Name
 3.movie trailer
