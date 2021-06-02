@@ -29,7 +29,7 @@ There are 3 categories in this web app
 
 In this page, you will have a freedom to stream or join to your own streamed movie or your friends if you started any, and friends list that shows persons joined in your stream from the begining
 
-![image](https://user-images.githubusercontent.com/72870001/120441825-982aeb80-c3a2-11eb-948f-0225f0d4b8f8.png)
+![image](https://user-images.githubusercontent.com/72870001/120442462-43d43b80-c3a3-11eb-91ae-8d70aecd7bd1.png)
 
 
 In the above image you can see a ### `stream now` button that has 3 options 
@@ -38,7 +38,7 @@ In the above image you can see a ### `stream now` button that has 3 options
 2.movie Name
 3.movie trailer
 
-![image](https://user-images.githubusercontent.com/72870001/120440588-5483b200-c3a1-11eb-85ae-bff256054347.png)
+![image](https://user-images.githubusercontent.com/72870001/120442498-4c2c7680-c3a3-11eb-9d60-814264355b99.png)
 
 This data will be stored in the backend for ### `streamflix`
 
@@ -55,7 +55,7 @@ This data will be stored in the backend for ### `streamflix`
 
 When someone starts a stream that data is reflected in the streamflix so that any one can view that movie in the streaflix page and start to watch without recursively type url from scratch just hover on it and click watch now to start streaming
 
-![image](https://user-images.githubusercontent.com/72870001/120441356-163ac280-c3a2-11eb-96a5-53b42a22b330.png)
+![image](https://user-images.githubusercontent.com/72870001/120442534-577fa200-c3a3-11eb-9bcc-11d7c04da2b1.png)
 
 ### `Account`
 
