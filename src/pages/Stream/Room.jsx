@@ -24,6 +24,7 @@ const Room = (props) => {
     const [play, setPlay] = useState(true)
     const [userData, setUserData] = useState({});
     var [typing,setTyping] = useState("");
+    const [sentStatus,setSentStatus]=useState(false);
     var playTime="";
     var localTime="";
     const myvideo = useRef(null);
@@ -137,9 +138,11 @@ const Room = (props) => {
 
         if(message.length===1){
             setTyping("");
+            setSentStatus(false);
         }
-        else{
-        socket.emit("typing",{name,user,roomId});
+        else if(!sentStatus){
+            socket.emit("typing",{name,user,roomId});
+            setSentStatus(true);
         }
     }
     useEffect(()=>{
@@ -148,7 +151,7 @@ const Room = (props) => {
             if(payload.user!==tokenId){
              var str=payload.name.toLowerCase().split(" ");   
              setTyping(str[0] + " is typing...");
-             setTimeout(function(){ setTyping("") }, 2000);
+             setTimeout(function(){ setTyping("") }, 3000);
             }
 
         })

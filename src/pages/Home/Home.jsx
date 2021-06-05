@@ -40,8 +40,9 @@ const Home = (props) => {
     }
     else {
       axios.post(`${BASE_URL}/home/getinfo`, { id: props.match.params.googleId }).then((res) => {
-
-        if (res.data[0].id === props.match.params.googleId) {
+        console.log(res.data.length,"res");
+        
+        if (res.data.length>0 && res.data[0].id === props.match.params.googleId) {
           setBanner({ ...res.data[0] });
           console.log(banner);
         }
