@@ -24,6 +24,13 @@ body{
 .gap-filler{
 	height: 0px;
 }
+.theme-choice{
+	transition: 2s;
+	transform: rotate(0deg);
+}
+#dark-theme-dropdown{
+	background-color: black;
+}
 .nav-container{
 	width: 90%;
 }
@@ -43,7 +50,15 @@ body{
 	color: #fff;
 	background-color: #e5b01c;
 }
-
+#light-theme{
+	background-color: #f5f5f5;
+}
+#dark-theme{
+	background-color: rgb(24, 24, 24);
+}
+#dark-theme a{
+	color: rgb(220 220 220)!important;
+}
 
 /* #Navigation
 ================================================== */

@@ -6,8 +6,11 @@ import Navbar from '../../components/Navbar/navbar';
 import io from 'socket.io-client';
 import SendIcon from '@material-ui/icons/Send';
 import { UserRoom } from '../../userContext/userdetails'
+import {Theme} from '../../userContext/userdetails'
+import {filePathMovie} from '../../userContext/userdetails'
 import { BASE_URL } from '../../constants/index'
 import ReactPlayer from 'react-player'
+import Box from '../../components/Box/Box'
 import "../../css/room.css"
 import axios from 'axios';
 import receive from "../../sounds/sendmessages.wav"
@@ -17,11 +20,12 @@ const duration = require("pendel");
 
 const Room = (props) => {
     const history = useHistory();
+    var { theme,setTheme } = useContext(Theme); 
     var { roomId, setRoomId } = useContext(UserRoom);
+    const {videoFilePath, setVideoFilePath} = useContext(filePathMovie);
     const roomid = props.match.params.roomid;
     const tokenId = localStorage.getItem("tokenId");
     const [banner, setBanner] = useState({});
-    const [play, setPlay] = useState(true)
     const [userData, setUserData] = useState({});
     var [typing,setTyping] = useState("");
     const [sentStatus,setSentStatus]=useState(false);
@@ -31,6 +35,12 @@ const Room = (props) => {
     const socket = io.connect(BASE_URL);
     var user = localStorage.getItem("tokenId");
     var x="";
+    const [boxState, setBoxState] = useState(false);
+
+    function display(state) {
+        setBoxState(false);
+      }    
+
     useEffect(async () => {
         if (!tokenId) {
             setRoomId(roomid);
@@ -45,20 +55,27 @@ const Room = (props) => {
 
                 if (res.data) {
                     setBanner({ ...res.data[0] });
+                    setVideoFilePath(res.data[0].movieUrl);
                     console.log(banner,"banner");
                     var resp = await axios.post(`${BASE_URL}/home/getinfo`, { id: tokenId });
                     setUserData({...resp.data[0]});
                     x={...resp.data[0]};
                     var userName =x.username;
-                    
                     socket.emit("join_room", { userName, roomId });
+                    if(res.data[0].movieUrl.length===0)
+                    {
+                      setBoxState(true);
+                    }
                 }
                 else {
                     history.push("/");
                 }
             })
         }
+        
     }, []);
+
+
 
     const [message, setMessage] = useState('');
     const [chat, setChat] = useState([]);
@@ -116,8 +133,8 @@ const Room = (props) => {
     useEffect(()=>{
         socket.on('timing',payload=>{
            
+            
         if(user!==payload.ID){
-           
            playTime= myvideo.current.getCurrentTime();
            var d = new Date();
            localTime=d.toLocaleTimeString();
@@ -125,8 +142,12 @@ const Room = (props) => {
            var syncDifference = Number(differenceInTime.minutes)*60+Number(differenceInTime.seconds);
            var streamerPlayTime = Number(payload.playTime)+syncDifference;
            console.log(Math.abs(streamerPlayTime-playTime));
-           if(Math.abs(streamerPlayTime-playTime)>0.7){
+
+           if(banner.movieUrl!=="" && Math.abs(streamerPlayTime-playTime)>1){
            myvideo.current.seekTo(streamerPlayTime,'seconds');
+           }
+           else if(Math.abs(streamerPlayTime-playTime)>2){
+            myvideo.current.seekTo(streamerPlayTime,'seconds');
            }
         }
         })
@@ -174,13 +195,10 @@ const Room = (props) => {
     };
 
     function Progress(progress) {
-        setPlay(true);
         playTime = progress.playedSeconds;
-        
         var d = new Date();
         localTime=d.toLocaleTimeString();
-        
-        console.log(banner.id);
+        console.log(localTime);
         var ID = banner.id;
         if(tokenId===banner.id){
         socket.emit('timing',{playTime,roomId,localTime,ID})
@@ -202,17 +220,16 @@ const Room = (props) => {
     return (
         <>
             <Navbar />
-            <div className="row chat-main">
+            <div className="row chat-main" id={theme+"-main"}>
                 <div className="col-lg-9 stream-area">
                     <div className="video-main">
                         <ReactPlayer
                             width="100%"
                             height="100%"
                             ref={myvideo}
-                            url={banner.movieUrl}
+                            url={videoFilePath}
                             controls
-                            playing={play}
-                            progressInterval={3000}
+                            progressInterval={4000}
                             onProgress={Progress}
                             onDuration={Duration}
                             onEnded={End}
@@ -220,7 +237,7 @@ const Room = (props) => {
                     </div>
                 </div>
 
-                <div className="col-lg-3 chat-area">
+                <div className="col-lg-3 chat-area" id={theme+"-chat"}> 
                     <div className="chat-box column">
                         <div class="messages" id="msg">
 
@@ -228,8 +245,8 @@ const Room = (props) => {
 
                                 return (<>
                                     {user === chat.user ?
-                                        <div className="chat-comb"><h6 className="usermsg" style={{ marginLeft: "auto", backgroundColor: "#ffc107" }} key={index}>{chat.message}</h6>
-                                        <img src={chat.profilepic} /></div> :
+                                        <div className="chat-comb" ><h6 className="usermsg" style={{ marginLeft: "auto", backgroundColor: "#ffc107" }} key={index}>{chat.message}</h6>
+                                        <img src={chat.profilepic} className={theme+"-img"}/></div> :
                                         <div className="chat-comb"><img src={chat.profilepic} /><h6 className="usermsg" key={index}>{chat.message}</h6></div>}
                                     <AlwaysScrollToBottom />
                                 </>
@@ -266,6 +283,9 @@ const Room = (props) => {
                     draggable
                     pauseOnHover
                 />
+                      {boxState &&
+                        <Box display={display} filePath={true}/>
+                    }
             </div>
         </>
     );

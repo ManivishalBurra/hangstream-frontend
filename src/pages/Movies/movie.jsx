@@ -5,6 +5,7 @@ import streamcam from "../../images/streamcam.png";
 import Navbar from '../../components/Navbar/navbar'
 import { UserRoom } from '../../userContext/userdetails'
 import { BASE_URL } from '../../constants/index'
+import {Theme} from '../../userContext/userdetails'
 import "../../css/movie.css";
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,6 +14,7 @@ const Movies = () => {
   const [movies, setMovies] = useState([]);
   const [play, setPlay] = useState(false);
   var { roomId, setRoomId } = useContext(UserRoom);
+  var { theme,setTheme } = useContext(Theme); 
   const [buttonStatus, setButtonStatus] = useState(false);
   const myvideo = useRef(null);
   const history = useHistory();
@@ -64,14 +66,14 @@ const Movies = () => {
           light={true}
           style={{borderRadius:"12px"}}
         />
-        <button className="stream-option center stream-btns" key={index} onClick={Startstream} id={"btn-" + index}><img src={streamcam} />&nbsp;&nbsp;Watch now</button>
-        <h6>{list.movieName}</h6>
+        <button className={"stream-option center stream-btns "+theme+"-img"} key={index} onClick={Startstream} id={"btn-" + index}><img src={streamcam} />&nbsp;&nbsp;Watch now</button>
+        <h6 className={theme+"-img"}>{list.movieName}</h6>
       </div>
     </div>
   }
   return <>
     <Navbar />
-    <div className="row movie-main">
+    <div className="row movie-main" id={theme+"-main"}>
 
       {movies.map(Movielists)}
 

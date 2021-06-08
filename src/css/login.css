@@ -5,6 +5,7 @@
     position: fixed;
     top: 0;
     z-index: 100000;
+   right: 0;
 }
 .center{
     display: flex;
@@ -16,7 +17,7 @@
 }
 .login-box{
     width: 27%;
-    height: 400px;
+    height: 450px;
     background-color: #e5b01c;
     border-radius: 20px;
     position: relative;

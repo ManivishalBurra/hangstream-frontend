@@ -10,6 +10,7 @@ import Navbar from '../../components/Navbar/navbar'
 import Box from '../../components/Box/Box'
 import { UserRoom } from '../../userContext/userdetails'
 import { BASE_URL } from '../../constants/index'
+import {Theme} from '../../userContext/userdetails'
 import "../../css/home.css";
 import axios from 'axios';
 
@@ -17,7 +18,7 @@ const Home = (props) => {
 
   const history = useHistory();
   var { roomId, setRoomId } = useContext(UserRoom);
-
+  var { theme,setTheme } = useContext(Theme); 
   const [boxState, setBoxState] = useState(false);
   const tokenId = localStorage.getItem("tokenId");
   const [banner, setBanner] = useState({});
@@ -73,7 +74,7 @@ const Home = (props) => {
   return (
     <>
       <Navbar />
-      <div className="row home-hero">
+      <div className="row home-hero" id={theme+"-main"}>
         <div className="col-lg-8 ">
           <div className="video-banner center column">
             <ReactPlayer
@@ -83,11 +84,9 @@ const Home = (props) => {
               controls={false}
               playing={true}
               loop={true}
-
             />
             <div className="video-info">
-              <h1>Streaming Now!!</h1>
-              <p>3 are watching</p>
+              {banner.movieUrl!==""?<h1>Streaming Now!!</h1>:<h6 style={{color:"white"}}>Get ready your local movie file,{banner.username} streaming now!!</h6>}  
             </div>
           </div>
           <div className="center stream-choice">
@@ -99,7 +98,7 @@ const Home = (props) => {
         </div>
         <div className="col-lg-4">
 
-          <div className="friends-list backdrop-blur">
+          <div className="friends-list backdrop-blur" id={theme+"-blur"}>
             <table class="table">
               <thead>
                 <tr>
@@ -123,7 +122,7 @@ const Home = (props) => {
         </div>
       </div>
       {boxState &&
-        <Box display={display} />
+        <Box display={display} filePath={false}/>
       }
     </>
   );

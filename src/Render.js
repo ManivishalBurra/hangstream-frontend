@@ -7,11 +7,17 @@ import Login from './pages/Login/Login'
 import Movies from './pages/Movies/movie'
 import Error from './pages/404/error'
 import {UserRoom} from './userContext/userdetails'
+import {Theme} from './userContext/userdetails'
+import {filePathMovie} from './userContext/userdetails'
 function Render() {
   const [roomId,setRoomId] = useState("");
+  const [theme,setTheme]= useState("light-theme");
+  const [videoFilePath, setVideoFilePath] = useState(null);
   return (
     <Router>
      <UserRoom.Provider value={{roomId,setRoomId}}>
+     <Theme.Provider value={{theme,setTheme}}>
+     <filePathMovie.Provider value={{videoFilePath, setVideoFilePath}}>
       <Switch>
       <Route exact path="/home/:googleId" component={Home} />
       <Route  path="/room/:roomid" component={Room} />
@@ -19,6 +25,8 @@ function Render() {
       <Route exact path="/" component={Login} />
       <Route  path="*" component={Error} />
       </Switch>
+      </filePathMovie.Provider>
+      </Theme.Provider>
       </UserRoom.Provider>
     </Router>
   );

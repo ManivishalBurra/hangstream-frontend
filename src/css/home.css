@@ -10,6 +10,19 @@ body{
     /* background-image: url("https://www.mirchi9.com/wp-content/uploads/2021/03/Jathi-Rathnalu-1.jpg"); */
     background-size: cover;
 }
+#light-theme-main{
+    background-color: rgb(233, 233, 233);
+}
+#dark-theme-main{
+    background-color: rgb(35 35 35);
+}
+#dark-theme-blur{
+    background-color: rgb(53 50 50 / 75%);
+}
+#dark-theme-blur td,#dark-theme-blur td i,#dark-theme-chat,.dark-theme-img{
+    filter: invert(1);
+}
+
 .video-banner:hover>.video-info{
     display: none;
 }
@@ -24,6 +37,7 @@ body{
 }
 .home-hero{
     padding:120px 80px 0;
+    height: 100vh;
 }
 .stream-option{
     transition: 0.6s;
