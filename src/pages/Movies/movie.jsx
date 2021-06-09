@@ -20,12 +20,12 @@ const Movies = () => {
   const history = useHistory();
   useEffect(() => {
     axios.get(`${BASE_URL}/movies/movieslist`).then((res) => {
-      console.log(res.data,"res data");
+
       if (res.data) {
         setMovies(res.data);
       }
       else{
-        console.log("error ocoored");
+
       }
     })
   }, [])

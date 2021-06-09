@@ -29,6 +29,7 @@ const Room = (props) => {
     const [userData, setUserData] = useState({});
     var [typing,setTyping] = useState("");
     const [sentStatus,setSentStatus]=useState(false);
+    const [play,setPlay] = useState(false);
     var playTime="";
     var localTime="";
     const myvideo = useRef(null);
@@ -56,13 +57,12 @@ const Room = (props) => {
                 if (res.data) {
                     setBanner({ ...res.data[0] });
                     setVideoFilePath(res.data[0].movieUrl);
-                    console.log(banner,"banner");
                     var resp = await axios.post(`${BASE_URL}/home/getinfo`, { id: tokenId });
                     setUserData({...resp.data[0]});
                     x={...resp.data[0]};
                     var userName =x.username;
                     socket.emit("join_room", { userName, roomId });
-                    if(res.data[0].movieUrl.length===0)
+                    if(res.data[0].movieUrl==="")
                     {
                       setBoxState(true);
                     }
@@ -115,12 +115,10 @@ const Room = (props) => {
 
             if (payload.user === tokenId) {
                 var msg = new Audio(send);
-                console.log(msg);
                 msg.play();
             }
             else {
                 var msg = new Audio(receive);
-                console.log(msg);
                 msg.play();
             }
 
@@ -141,13 +139,13 @@ const Room = (props) => {
            var differenceInTime = duration.time(localTime,payload.localTime);
            var syncDifference = Number(differenceInTime.minutes)*60+Number(differenceInTime.seconds);
            var streamerPlayTime = Number(payload.playTime)+syncDifference;
-           console.log(Math.abs(streamerPlayTime-playTime));
-
-           if(banner.movieUrl!=="" && Math.abs(streamerPlayTime-playTime)>1){
+           if(payload.movie!=="" && Math.abs(streamerPlayTime-playTime)>1){
            myvideo.current.seekTo(streamerPlayTime,'seconds');
+           setPlay(true);
            }
            else if(Math.abs(streamerPlayTime-playTime)>2){
-            myvideo.current.seekTo(streamerPlayTime,'seconds');
+            myvideo.current.seekTo(streamerPlayTime,'seconds'); 
+
            }
         }
         })
@@ -181,7 +179,6 @@ const Room = (props) => {
 
     const sendMessage = (e) => {
         e.preventDefault();
-        console.log(message);
         var profilepic=userData.profilepic;
         socket.emit('message', { message, user ,roomId,profilepic})
         setMessage("");
@@ -198,20 +195,20 @@ const Room = (props) => {
         playTime = progress.playedSeconds;
         var d = new Date();
         localTime=d.toLocaleTimeString();
-        console.log(localTime);
         var ID = banner.id;
+        var movie=banner.movieName;
         if(tokenId===banner.id){
-        socket.emit('timing',{playTime,roomId,localTime,ID})
+        socket.emit('timing',{playTime,roomId,localTime,ID,movie})
         }
         
     }
 
     function Duration(duration) {
-        console.log(duration);
+        
     }
 
     function End() {
-        axios.post(`${BASE_URL}/home/roomstream`,{url:"",movieName:"",banner:banner,roomid:"",id:tokenId}).then((res)=>{
+        axios.post(`${BASE_URL}/home/roomstream`,{url:"",movieName:"",banner:"",roomid:"",id:tokenId}).then((res)=>{
             if(res.data){
             history.push(`/home/${tokenId}`);
             }
@@ -228,6 +225,7 @@ const Room = (props) => {
                             height="100%"
                             ref={myvideo}
                             url={videoFilePath}
+                            playing={play}
                             controls
                             progressInterval={4000}
                             onProgress={Progress}

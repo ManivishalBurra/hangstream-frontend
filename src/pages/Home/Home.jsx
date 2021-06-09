@@ -32,7 +32,6 @@ const Home = (props) => {
 
         if (res.data) {
           setBanner({ ...res.data[0] });
-          console.log(banner);
         }
         else {
           history.push("/");
@@ -41,11 +40,11 @@ const Home = (props) => {
     }
     else {
       axios.post(`${BASE_URL}/home/getinfo`, { id: props.match.params.googleId }).then((res) => {
-        console.log(res.data.length,"res");
+        
         
         if (res.data.length>0 && res.data[0].id === props.match.params.googleId) {
           setBanner({ ...res.data[0] });
-          console.log(banner);
+          
         }
         else {
           history.push("/");

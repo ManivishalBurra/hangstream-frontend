@@ -20,13 +20,11 @@ const Login = ()=>{
 
     const responseSuccessGoogle=(response)=>{        
        axios.post(`${BASE_URL}/credentials`,{...response.profileObj}).then((res)=>{
-            console.log(res.data);
             localStorage.setItem("tokenId",res.data.id);
             history.push(`/home/${res.data.id}`);
         })
     }
     const responseErrorGoogle=(response)=>{
-        console.log(response);
         toast.error(`${response.details}`, {
             position: "top-right",
             autoClose: 3000,
