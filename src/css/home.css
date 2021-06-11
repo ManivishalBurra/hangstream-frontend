@@ -37,7 +37,7 @@ body{
 }
 .home-hero{
     padding:120px 80px 0;
-    height: 100vh;
+    height: 100%;
 }
 .stream-option{
     transition: 0.6s;

@@ -144,8 +144,7 @@ const Room = (props) => {
            setPlay(true);
            }
            else if(Math.abs(streamerPlayTime-playTime)>2){
-            myvideo.current.seekTo(streamerPlayTime,'seconds'); 
-
+            myvideo.current.seekTo(streamerPlayTime,'seconds');
            }
         }
         })

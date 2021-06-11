@@ -65,27 +65,21 @@ const Box = (props) => {
 
                     <form className="center column">
                         <input
-                            name="Drive url"
-                            placeholder="Movie url or choose file path"
+                            name="movie url"
+                            placeholder="Movie url"
                             value={url}
-                            onChange={(e) => setUrl(e.target.value)}
+                            onChange={(e) => {setUrl(e.target.value);setBanner(e.target.value)}}
                             label="Drive url"
                         />
                         <input
-                            name="Drive url"
+                            name="movie name"
                             placeholder="Movie name"
                             value={movieName}
                             onChange={(e) => setName(e.target.value)}
                             label="Drive url"
                         />
-                        <input
-                            name="Drive url"
-                            placeholder="Movie trailer url"
-                            value={banner}
-                            onChange={(e) => setBanner(e.target.value)}
-                            label="Drive url"
-                        />
                         <button id="Submit-btn" onClick={StreamSubmit}>Stream now</button>
+                        <a>or</a>
                         <button id="Submit-btn" style={{ marginTop: "10px" }} onClick={StreamFile}>Stream by filepath</button>
 
                     </form>}
