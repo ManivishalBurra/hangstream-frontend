@@ -43,8 +43,15 @@ body{
 }
 .movie-tile:hover>.stream-option-main ,.stream-option-main:hover{
   display: block;
-  height: 180px;
+  height: 200px;
   padding: 20px 20px 0 20px;
+}
+.genre{
+  padding-top: 0;
+  display: flex;
+  font-weight: bolder;
+  font-size: 13px;
+  color:  rgb(158, 158, 158);
 }
 .movie-tile:hover>.react-player-movies{
   height: 210px;
@@ -58,14 +65,33 @@ body{
   color: rgb(199, 199, 199);
 }
 .movie-tile .hover-h6{
-  margin-top:40px;
-  color:  rgb(199, 199, 199);;
+  margin-top:25px;
+  color:  rgb(199, 199, 199);
+  display: inline-block;
+}
+.rating-main{
+  color:  rgb(199, 199, 199);
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 400;
 }
 .movie-tile h6{
   display: flex;
   text-align: center;
   color: black;
-  position: fixed;
+  margin-right: 18px;
+}
+.ratings{
+  color: rgb(0, 117, 0);
+  font-weight: bolder;
+}
+.plot{
+  display: inline-block;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 12px;
+  text-align: start!important;
+  padding-top: 3px;
 }
 .movie-thumbnail{
   width: 255px;

@@ -22,13 +22,23 @@ const Movies = () => {
   var { roomId, setRoomId } = useContext(UserRoom);
   var { theme,setTheme } = useContext(Theme); 
   const [buttonStatus, setButtonStatus] = useState(false);
+  const [ind,setInd] = useState(0);
   const myvideo = useRef(null);
   const history = useHistory();
+  var arr=[];
   useEffect(() => {
-    axios.get(`${BASE_URL}/movies/movieslist`).then((res) => {
+   axios.get(`${BASE_URL}/movies/movieslist`).then(async (res) => {
 
       if (res.data) {
         setMovies(res.data);
+        var len= await res.data.length;
+        console.log(len);
+        for(var i=0;i<len;i++)
+        {
+          arr.push(false);
+        }
+        console.log(arr);
+        setClay(arr);
       }
       else{
 
@@ -36,20 +46,27 @@ const Movies = () => {
     })
   }, [])
   function PlayTrailer(e) {
+    var str = Number(e.target.id.substring(4));
     setButtonStatus(true);
+    arr=clay;
+    if(str)
+    {
+     arr[str]=true;
+     setInd(str);
+    }
+    console.log(arr);
+    setClay(arr);
+
+    console.log(clay,"clay");
     if(myvideo.current.getCurrentTime()<60){
     myvideo.current.seekTo(60,'seconds');
-    }
-    if(!clay)
-    {
-      setClay(true);
-      
     }
   }
   function StopTrailer(e) {
     setButtonStatus(false);
-    
-    setClay(false);
+    arr=clay;
+    arr[ind]=false;
+    setClay(arr);
   }
   function Startstream(e) {
     var str = Number(e.target.id.substring(4));
@@ -69,20 +86,20 @@ const Movies = () => {
   }
   function Movielists(list, index) {
     return <div className=" movie-thumbnail">
-      <div className="movie-tile" onMouseOver={PlayTrailer} onMouseOut={StopTrailer} key={index} id={index}>
+      <div className="movie-tile" key={index} id={index}>
         <div className="react-player-movies">
         <ReactPlayer
           ref={myvideo}
           width="100%"
           height="100%"
           url={list.banner}
-          playing={clay}
+          playing={clay[index]}
           loop={true}
           light={true}
         />
         </div>
         <h6 className={"non-hover-h6 "+theme+"-h6"}>{list.movieName.substring(0,16)}</h6>
-        <div className="stream-option-main backdrop-blur-black">
+        <div className="stream-option-main backdrop-blur-black" onMouseOver={PlayTrailer} onMouseOut={StopTrailer} id={"min-" + index}>
         <Tippy content="Play" className="tipsy-topsy">
         <button className="stream-btn" key={index} onClick={Startstream} id={"btn-" + index} ><PlayArrowIcon/></button>
         </Tippy>
@@ -95,7 +112,16 @@ const Movies = () => {
         <Tippy content="Info">
         <button className="stream-btn"><InfoOutlinedIcon/></button>
         </Tippy>
+        <div className="title-header">
         <h6 className="hover-h6">{list.movieName.substring(0,16)}</h6>
+        <p className="rating-main">IMDB: <span className="ratings">{list.ratings}</span></p>
+        </div>
+        <p className="genre">{list.genres.map((genre,index)=>{
+          return <>
+          <span>&#8226;{genre}&nbsp;</span>
+          </>
+        })}</p>
+        <p className="plot">{list.plotOutline}</p>
         </div>
       </div>
     </div>

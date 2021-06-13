@@ -15,8 +15,25 @@
     border:none;
     border-radius: 8px;
     height: 50px;
+    width: 50%;
     background-color: black;
     color: white;
+}
+.movie-name{
+    width: 90%;
+    margin-bottom: 25px;
+}
+.movie-name input{
+    border-radius: 10px 0 0 10px!important;
+    margin-bottom: 0!important;
+    width: 100%!important;
+}
+.movie-name button{
+    width: 30px!important;
+    height: 50px;
+    border: none;
+    border-radius: 0 10px 10px 0!important;
+    margin-top: 0!important;
 }
 .close-btn{
     color: white;
@@ -43,4 +60,45 @@
 }
 input[type="file"] {
     display: none;
+}
+.suggestions{
+    transition: 0.5s;
+    height: 450px;
+    width: 450px;
+    border-radius: 10px;
+    overflow-y: scroll;
+}
+.title-header{
+    
+    display: flex;
+    align-items: baseline;
+}
+.suggest-main{
+    width: 100%;
+    background-color: rgb(214, 214, 214);
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.suggest-img{
+    width: 50%;
+    height: 100%;
+    border-radius: 10px;
+}
+.suggest-main p{
+    padding: 10px 0;
+}
+.updateDB-btn{
+    width: 100%;
+    cursor: pointer;
+}
+.suggest-img img{
+    width: 100%;
+    height: auto;
+}
+.suggest-box-main{
+    
+    width: 50%;
+    margin-right: auto;
+    margin-left: auto;
 }
