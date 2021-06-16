@@ -7,13 +7,20 @@ import { BASE_URL } from '../../constants/index';
 import { UserRoom } from '../../userContext/userdetails'
 import { filePathMovie } from '../../userContext/userdetails'
 import DescriptionIcon from '@material-ui/icons/Description';
+import { ToastContainer, toast } from "material-react-toastify";
+import "material-react-toastify/dist/ReactToastify.css";
 import SearchIcon from '@material-ui/icons/Search';
 import "../../css/box.css"
 const Box = (props) => {
     const history = useHistory();
     var { roomId, setRoomId } = useContext(UserRoom);
-    const [suggestions, setSuggestions] = useState([]);
+    const [suggestions, setSuggestions] = useState([
+        {i:{imageUrl:"https://cdn.dribbble.com/users/2015153/screenshots/6592242/progess-bar2.gif"},
+        l:"please wait",
+        }
+    ]);
     const [url, setUrl] = useState("");
+    const [enable,setEnable] = useState(true);
     const [movieName, setName] = useState("");
     const [banner, setBanner] = useState("");
     const tokenId = localStorage.getItem("tokenId");
@@ -62,7 +69,6 @@ const Box = (props) => {
     }
 
     function GiveSuggestions(e) {
-        setShow(true);
         e.preventDefault();
         const options = {
             method: 'GET',
@@ -74,14 +80,37 @@ const Box = (props) => {
             }
         };
         if (movieName !== "") {
-            axios.request(options).then(async function (response) {
-                var x=await response.data.d;
+            axios.request(options).then(function (response) {
+                var x=response.data.d;
                 setSuggestions(x);
-                console.log(suggestions);
-
+                console.log(x);
+                if(x.length!==0)
+                {
+                    if(suggestions.length!==0)
+                    {
+                    console.log(suggestions);
+                    setSuggestions(x);
+                    alert("chi")
+                    setShow(true);
+                    }
+                    else{
+                        setSuggestions([suggestions,...x]);
+                        console.log(suggestions);
+                    }
+                }
             }).catch(function (error) {
                 console.error(error);
             });
+        }
+        else{
+            toast.error(`Movie name is empty`, {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                });
         }
     }
     function UpdateMovieDB(e) {
@@ -100,13 +129,14 @@ const Box = (props) => {
             var options = {
                 method: 'GET',
                 url: 'https://imdb8.p.rapidapi.com/title/get-overview-details',
-                params: { tconst: movieID, currentCountry: 'US' },
+                params: { tconst: id, currentCountry: 'US' },
                 headers: {
                     'x-rapidapi-key': 'fe88b7cda7mshfee26075322cbb7p1eb01cjsn302c1761040b',
                     'x-rapidapi-host': 'imdb8.p.rapidapi.com'
                 }
             };
-
+            if(id.includes("tt"))
+            {
             axios.request(options).then(function (response) {
                 console.log(response.status);
                 var genre = response.data.genres;
@@ -116,9 +146,18 @@ const Box = (props) => {
                 var rating = response.data.ratings.rating;
                 setRatings(rating)
                 console.log({ y, l, id, genre, plot, rating });
+                setEnable(false);
             }).catch(function (error) {
                 console.error(error);
             });
+            }
+            else if(id!=="")
+            {
+                setGenres(["N/A"]);
+                setPlotOutline("N/A");
+                setRatings("N/A");
+                setEnable(false);
+            }
 
         }
     }
@@ -153,27 +192,39 @@ const Box = (props) => {
                             onChange={(e) => { setUrl(e.target.value); setBanner(e.target.value) }}
                             label="Drive url"
                         />
-                        <button id="Submit-btn" onClick={StreamSubmit}>Stream now</button>
+                        <button id="Submit-btn" onClick={StreamSubmit} disabled={enable}>Stream now</button>
                         <a>or</a>
                         <button id="Submit-btn" style={{ marginTop: "10px" }} onClick={StreamFile}>Stream by filepath</button>
 
                     </form>}
                 <CloseIcon className="close-btn" onClick={() => { props.display(false) }} />
             </div>
-            <div className="suggestions" style={show?{transition: "0.5s",width:"450px"}:{transition: "0.5s",width:"0"}}>
+            {show && <div className="suggestions" style={show?{transition: "0.5s",width:"450px"}:{transition: "0.5s",width:"0"}}>
                 {suggestions.map((list, index) => {
                     return <>
                         <div className="suggest-main center column">
                             <div className="suggest-img center">
-                                <img src={list.i.imageUrl} alt={list.l} />
+                                {list.i && <img src={list.i.imageUrl} alt={list.l} />}
                             </div>
                             <div className="updateDB-btn" onClick={UpdateMovieDB}>
-                                <p id={index}>{list.l}</p>
+                                {list.l && <p id={index}>{list.l}</p>}
                             </div>
                         </div>
                     </>
                 })}
             </div>
+            }
+            <ToastContainer
+                    position="top-right"
+                    autoClose={3000}
+                    hideProgressBar
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
         </div>
     );
 
