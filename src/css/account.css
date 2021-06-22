@@ -1,0 +1,92 @@
+.account-main{
+    height: 100vh;
+    margin-top: 70px;
+    background-image: url('../images/account background.png');
+    background-size: cover;
+}
+.account{
+    height: 640px;
+    width: 1050px;
+    border-radius: 40px;
+    background-color: rgba(255, 255, 255, 60%)!important;
+}
+.account-nav{
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.account-nav img{
+    width: 55px;
+    border-radius: 100%;
+    margin-right: 20px;
+}
+.account-nav p{
+    display: inline;
+    font-size: 20px;
+    font-weight: 500;
+}
+.account-nav h2{
+    color:rgb(59, 59, 59);
+    font-weight: 700;
+    padding-right: 80px;
+}
+.account-content{
+    width: 20%;
+    margin-top: 50px;
+}
+.account-content .table td,.account-content .table th,.account-box .table td,.account-box .table th{
+    border: none;
+}
+.account-info{
+    width: 80%;
+    height: 85%;
+    overflow-y: scroll;
+    padding: 15px;
+}
+.content-main{
+    width: 100%;
+    display: flex;
+}
+.account-box{
+    margin-bottom: 20px;
+    width: 90%;
+    border-radius: 45px;
+    background-color: rgb(211, 211, 211);
+    box-shadow: 3px 0px 14px -5px rgb(0 0 0 / 58%);
+}
+.account-box h6{
+    font-weight: bolder;
+    color:rgb(59, 59, 59);
+    text-align: center;
+}
+.account-box h1{
+    color: #414141;
+    font-size: 90px;
+}
+.account-box p{
+    padding-top: 5px;
+    display: flex;
+    font-size: 18px;
+}
+.account-box p:last-child{
+    color: rgb(105, 105, 105);
+    font-size: 15px;
+}
+.dets{
+    padding:25px;
+}
+.account-box a{
+    color: #007bff!important;
+    position: relative;
+    left: 25%;
+    font-size: 12px;
+}
+.account-box img{
+    margin: 30px 0;
+    border-radius: 100%;
+}
+.pie{
+    width: 50%;
+    height: 50%;
+}

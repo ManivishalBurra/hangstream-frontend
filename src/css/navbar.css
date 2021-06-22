@@ -55,6 +55,7 @@ body{
 }
 #dark-theme{
 	background-color: rgb(24, 24, 24);
+	box-shadow: none;
 }
 #dark-theme a{
 	color: rgb(220 220 220)!important;

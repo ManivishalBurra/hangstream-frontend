@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import ReactDOM from 'react-dom';
 import {Route, BrowserRouter as Router,Switch} from 'react-router-dom';
 import Home from './pages/Home/Home'
+import Account from './pages/accounts/account';
 import Room from './pages/Stream/Room'
 import Login from './pages/Login/Login'
 import Movies from './pages/Movies/movie'
@@ -20,6 +21,7 @@ function Render() {
      <filePathMovie.Provider value={{videoFilePath, setVideoFilePath}}>
       <Switch>
       <Route exact path="/home/:googleId" component={Home} />
+      <Route path="/account" component={Account} />
       <Route  path="/room/:roomid" component={Room} />
       <Route  path="/movies" component={Movies} />
       <Route exact path="/" component={Login} />

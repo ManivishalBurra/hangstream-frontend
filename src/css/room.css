@@ -69,7 +69,7 @@ form{
     border-radius: 23px;
     margin-bottom: 8px;
     display: table;
-
+    overflow-wrap: anywhere;
 }
 .usermsg h6{
     margin: 0;

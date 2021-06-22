@@ -47,6 +47,7 @@ const Movies = () => {
   }, [])
   function PlayTrailer(e) {
     var str = Number(e.target.id.substring(4));
+    console.log(e.target);
     setButtonStatus(true);
     arr=clay;
     if(str)
@@ -54,10 +55,14 @@ const Movies = () => {
      arr[str]=true;
      setInd(str);
     }
-    console.log(arr);
+    else if(str==0)
+    {
+      arr[str]=true;
+      setInd(str);
+    }
     setClay(arr);
 
-    console.log(clay,"clay");
+    //console.log(clay,"clay");
     if(myvideo.current.getCurrentTime()<60){
     myvideo.current.seekTo(60,'seconds');
     }
@@ -101,27 +106,27 @@ const Movies = () => {
         <h6 className={"non-hover-h6 "+theme+"-h6"}>{list.movieName.substring(0,16)}</h6>
         <div className="stream-option-main backdrop-blur-black" onMouseOver={PlayTrailer} onMouseOut={StopTrailer} id={"min-" + index}>
         <Tippy content="Play" className="tipsy-topsy">
-        <button className="stream-btn" key={index} onClick={Startstream} id={"btn-" + index} ><PlayArrowIcon/></button>
+        <button className="stream-btn" key={index} onClick={Startstream} id={"btn-" + index} ><PlayArrowIcon id={"ftn-" + index}/></button>
         </Tippy>
         <Tippy content="Like" className="tipsy-topsy">
-        <button className="stream-btn"><ThumbUpAltIcon/></button>
+        <button className="stream-btn" id={"tin-" + index}><ThumbUpAltIcon/></button>
         </Tippy>
         <Tippy content="Dislike" className="tipsy-topsy">
-        <button className="stream-btn"><ThumbDownIcon/></button>
+        <button className="stream-btn" id={"din-" + index} ><ThumbDownIcon/></button>
         </Tippy>
         <Tippy content="Info">
         <button className="stream-btn"><InfoOutlinedIcon/></button>
         </Tippy>
-        <div className="title-header">
-        <h6 className="hover-h6">{list.movieName.substring(0,16)}</h6>
-        <p className="rating-main">IMDB: <span className="ratings">{list.ratings}</span></p>
+        <div className="title-header" id={"ain-" + index}>
+        <h6 className="hover-h6" id={"bin-" + index}>{list.movieName.substring(0,16)}</h6>
+        <p className="rating-main" id={"cin-" + index}>IMDB: <span className="ratings">{list.ratings}</span></p>
         </div>
-        <p className="genre">{list.genres.map((genre,index)=>{
+        <p className="genre" id={"din-" + index}>{list.genres.map((genre,index)=>{
           return <>
           <span>&#8226;{genre}&nbsp;</span>
           </>
         })}</p>
-        <p className="plot">{list.plotOutline}</p>
+        <p className="plot" id={"ein-" + index}>{list.plotOutline}</p>
         </div>
       </div>
     </div>

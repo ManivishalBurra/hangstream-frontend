@@ -65,7 +65,7 @@ const Navbar = () => {
                                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Account<AccountCircleOutlinedIcon/></a>
                                         <div class="dropdown-menu" id={theme+"-dropdown"}>
                                             <a class="dropdown-item" onClick={Logout}>Logout</a>
-                                            <a class="dropdown-item" onClick={Logout}>My account</a>
+                                            <Link class="dropdown-item" to={"/account"} >My account</Link>
                                         </div>
                                     </li>
                                     <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">

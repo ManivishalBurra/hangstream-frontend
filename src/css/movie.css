@@ -15,7 +15,7 @@ body{
   height: 0;
   width: 100%;
   border-radius: 0 0 10px 10px;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 .react-player-movies{
   transition: 0.5s;
@@ -43,7 +43,7 @@ body{
 }
 .movie-tile:hover>.stream-option-main ,.stream-option-main:hover{
   display: block;
-  height: 200px;
+  height: 230px;
   padding: 20px 20px 0 20px;
 }
 .genre{
@@ -52,6 +52,7 @@ body{
   font-weight: bolder;
   font-size: 13px;
   color:  rgb(158, 158, 158);
+  margin-bottom: 10px;
 }
 .movie-tile:hover>.react-player-movies{
   height: 210px;
@@ -92,6 +93,8 @@ body{
   line-height: 12px;
   text-align: start!important;
   padding-top: 3px;
+  color: rgb(207, 207, 207);
+  padding-bottom: 12px;
 }
 .movie-thumbnail{
   width: 255px;
