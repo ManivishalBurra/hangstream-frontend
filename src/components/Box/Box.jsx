@@ -30,6 +30,7 @@ const Box = (props) => {
     const [ratings, setRatings] = useState("");
     const [genres, setGenres] = useState([]);
     const [show,setShow] = useState(false);
+    const [image,setImage]=useState("");
     function StreamSubmit(e) {
         console.log(e);
         e.preventDefault();
@@ -90,7 +91,6 @@ const Box = (props) => {
                     {
                     console.log(suggestions);
                     setSuggestions(x);
-                    alert("chi")
                     setShow(true);
                     }
                     else{
@@ -120,7 +120,9 @@ const Box = (props) => {
         setName(l);
         var id = String(suggestions[e.target.id].id.toString());
         setMovieID(id);
-
+        var img=""
+        if(suggestions[e.target.id].i)img = suggestions[e.target.id].i.imageUrl;
+        setImage(img);
         if (id.substring(0, 2) !== "tt") {
             setMovieID("");
             setYear("");
@@ -161,6 +163,19 @@ const Box = (props) => {
 
         }
     }
+    function PrivateUpload(e){
+        e.preventDefault();
+        axios.post(`${BASE_URL}/private/upload`, { url: url, ratings: ratings, movieID: movieID, year: year, plotOutline: plotOutline, genres: genres, movieName: movieName, banner: banner,id: tokenId,image:image ,source: "admin" }).then((res) => {
+            if (res.data) {
+                alert("uploaded");
+                props.display(false);
+            }
+        })
+    }
+
+
+
+
     return (
         <div className="login-main box-main center backdrop-blur-black">
             <div className="login-box center column">
@@ -192,10 +207,12 @@ const Box = (props) => {
                             onChange={(e) => { setUrl(e.target.value); setBanner(e.target.value) }}
                             label="Drive url"
                         />
-                        <button id="Submit-btn" onClick={StreamSubmit} disabled={enable}>Stream now</button>
+                        {!props.private?<><button id="Submit-btn" onClick={StreamSubmit} disabled={enable}>Stream now</button>
                         <a>or</a>
-                        <button id="Submit-btn" style={{ marginTop: "10px" }} onClick={StreamFile}>Stream by filepath</button>
-
+                        <button id="Submit-btn" style={{ marginTop: "10px" }} onClick={StreamFile}>Stream by filepath</button></>
+                        :<button id="Submit-btn" onClick={PrivateUpload} disabled={enable}>Upload</button>
+                        }
+                        
                     </form>}
                 <CloseIcon className="close-btn" onClick={() => { props.display(false) }} />
             </div>

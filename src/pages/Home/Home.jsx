@@ -121,7 +121,7 @@ const Home = (props) => {
         </div>
       </div>
       {boxState &&
-        <Box display={display} filePath={false}/>
+        <Box display={display} filePath={false} private={false}/>
       }
     </>
   );

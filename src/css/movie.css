@@ -6,9 +6,8 @@ body{
 }
 .movie-main{
     width: 100%;
-    height: 100%;
     background-color: rgb(231, 231, 231);
-    padding: 145px 80px 0 80px;
+    padding: 125px 80px 0 80px;
     margin: 0;
 }
 .stream-option-main{
@@ -109,6 +108,38 @@ body{
   height: 40px;
   border: none;
   margin-right: 12px;
+}
+.private{
+  position: fixed;
+  bottom: 20px;
+  right: 50px;
+}
+.private button{
+  width: 45px;
+  height: 45px;
+  border: none;
+  background-color: rgb(0, 0, 0);
+  color: white;
+  border-radius: 100%;
+}
+.drive-poster{
+  transition: 0.5s;
+  width: 100%;
+  height: auto;
+}
+#drive-player{
+  height: 320px!important;
+}
+.movie-tile:hover>#drive-player img{
+  position: absolute;
+  transition: 0.5s;
+  width: 0;
+
+}
+.movie-tile:hover>#drive-player{
+  height: 210px!important;
+  width: 100%; 
+  border-radius: 10px 10px 0 0;
 }
 ::-webkit-scrollbar {
     width: 0px;

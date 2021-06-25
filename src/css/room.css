@@ -35,6 +35,7 @@ form{
     width: 100%;
     background-color: black;
     border-radius: 20px;
+    overflow: hidden;
 }
 .messagebox{
     position: relative;
@@ -80,7 +81,7 @@ input:focus
 }
 iframe,object{
     border: none;
-    border-radius: 20px;
+    
 }
 .typing{
     font-size: 15px;
