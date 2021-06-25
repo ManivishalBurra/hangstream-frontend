@@ -73,7 +73,7 @@ const Private = () => {
     history.push("/drive");
   }
   function Movielists(list, index) {
-    return <div className=" movie-thumbnail">
+    return <div className=" movie-thumbnail" style={{height:"330px"}}>
       <div className="movie-tile" key={index} id={index}>
         <div className="react-player-movies" id="drive-player">
         <img src={list.poster} className="drive-poster" />

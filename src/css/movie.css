@@ -125,7 +125,11 @@ body{
 .drive-poster{
   transition: 0.5s;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+}
+#drive-player iframe{
+  display: none;
 }
 #drive-player{
   height: 320px!important;
@@ -134,7 +138,9 @@ body{
   position: absolute;
   transition: 0.5s;
   width: 0;
-
+}
+.movie-tile:hover>#drive-player iframe{
+  display: flex;
 }
 .movie-tile:hover>#drive-player{
   height: 210px!important;
