@@ -154,9 +154,9 @@ const Movies = () => {
     <div className="row movie-main" id={theme+"-main"}>
       {movies.map(Movielists)}
     </div>
-    {privateStatus && <div className="private">
+    {privateStatus && <div className="private-enter private">
     <Tippy content="Enter bitsian netflix">
-      <button onClick={()=>{history.push("/private")}}><FilterDramaIcon/></button>
+      <button onClick={()=>{history.push("/private")}}>Enter bitsian netflix  <FilterDramaIcon/></button>
     </Tippy>
     </div>}
     </div>

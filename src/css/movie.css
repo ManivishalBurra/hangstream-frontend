@@ -111,16 +111,20 @@ body{
 }
 .private{
   position: fixed;
-  bottom: 20px;
+  bottom: 35px;
   right: 50px;
 }
 .private button{
   width: 45px;
   height: 45px;
   border: none;
-  background-color: rgb(0, 0, 0);
-  color: white;
+  background-color: #e5b735;
+  color: black;
   border-radius: 100%;
+}
+.private-enter button{
+  width: 220px!important;
+  border-radius: 48px!important;
 }
 .drive-poster{
   transition: 0.5s;
