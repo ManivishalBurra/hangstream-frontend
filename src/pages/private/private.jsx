@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import ReactPlayer from 'react-player'
 import streamcam from "../../images/streamcam.png";
+import Info from '../../components/EpInfo/epinfo'
 import Navbar from '../../components/Navbar/navbar'
 import {filePathMovie} from '../../userContext/userdetails'
 import Tippy from '@tippyjs/react';
@@ -30,6 +31,7 @@ const Private = () => {
   const [banner, setBanner] = useState({});
   const tokenId = localStorage.getItem("tokenId");
   const [privateStatus,setPrivateStatus] = useState(false);
+  const [ind,setInd] = useState(-1);
   var arr=[];
   useEffect(() => {
    axios.get(`${BASE_URL}/private/privatelist`).then(async (res) => {
@@ -63,18 +65,23 @@ const Private = () => {
 
   function display(state) {
     setBoxState(false);
+    setInd(-1);
   }
   function CreateRoomDiv() {
     setBoxState(true);
   }
   function Startstream(e) {
     var str = Number(e.target.id.substring(4));
-    setVideoFilePath(movies[str].movieUrl);
-    history.push("/drive");
+    setVideoFilePath(movies[str].movieUrl[0]);
+    history.push("/watch");
+  }
+  function ShowInfo(e) {
+    var str = Number(e.target.id.substring(4));
+    setInd(str);
   }
   function Movielists(list, index) {
-    return <div className=" movie-thumbnail" style={{height:"330px"}}>
-      <div className="movie-tile" key={index} id={index}>
+    return <div className=" movie-thumbnail movie-thumbnail-private" style={{height:"330px"}}>
+      <div className="movie-tile movie-tile-private" key={index} id={index}>
         <div className="react-player-movies" id="drive-player">
         <img src={list.poster} className="drive-poster" />
         <iframe 
@@ -95,18 +102,20 @@ const Private = () => {
         <Tippy content="Dislike" className="tipsy-topsy">
         <button className="stream-btn" id={"din-" + index} ><ThumbDownIcon/></button>
         </Tippy>
-        <Tippy content="Info">
-        <button className="stream-btn"><InfoOutlinedIcon/></button>
+        <Tippy content="Episodes & Info">
+        <button className="stream-btn" id={"epn-" + index} onClick={ShowInfo}><InfoOutlinedIcon id={"inf-" + index}/></button>
         </Tippy>
         <div className="title-header" id={"ain-" + index}>
         <h6 className="hover-h6" id={"bin-" + index}>{list.movieName.substring(0,16)}</h6>
         <p className="rating-main" id={"cin-" + index}>IMDB: <span className="ratings">{list.ratings}</span></p>
         </div>
+        <div>
         <p className="genre" id={"din-" + index}>{list.genres.map((genre,index)=>{
           return <>
-          <span>&#8226;{genre}&nbsp;</span>
+          {index<4 && <span>&#8226;{genre}&nbsp;</span>}
           </>
         })}</p>
+        </div>
         <p className="plot" id={"ein-" + index}>{list.plotOutline}</p>
         </div>
       </div>
@@ -126,6 +135,17 @@ const Private = () => {
     {boxState &&
         <Box display={display} filePath={false} private={true}/>
     }
+    {ind>0 && <Info
+      img={movies[ind].poster}
+      ep={movies[ind].episode}
+      movieName={movies[ind].movieName}
+      Urls={movies[ind].movieUrl}
+      rating={movies[ind].ratings}
+      year={movies[ind].year}
+      genre={movies[ind].genres}
+      plotOutline={movies[ind].plotOutline}
+      display={display}
+    />}
     </div>
   </>
 }

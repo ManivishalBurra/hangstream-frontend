@@ -26,7 +26,7 @@ function Render() {
       <Route path="/account" component={Account} />
       <Route  path="/room/:roomid" component={Room} />
       <Route  path="/movies" component={Movies} />
-      <Route  path="/drive" component={Drive} />
+      <Route  path="/watch" component={Drive} />
       <Route  path="/private" component={Private} />
       <Route exact path="/" component={Login} />
       <Route  path="*" component={Error} />
