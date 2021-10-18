@@ -129,8 +129,12 @@ const Room = (props) => {
         console.log(payload.movie);
         console.log(Math.abs(streamerPlayTime - playTime));
         if (payload.movie !== "" && Math.abs(streamerPlayTime - playTime) > 1) {
+          //for online
           myvideo.current.seekTo(streamerPlayTime, "seconds");
           setPlay(true);
+        } else if (Math.abs(streamerPlayTime - playTime) > 1) {
+          //for offline
+          myvideo.current.seekTo(streamerPlayTime, "seconds");
         }
       }
     });
@@ -180,6 +184,7 @@ const Room = (props) => {
     localTime = d.toLocaleTimeString();
     var ID = banner.id;
     var movie = banner.movieName;
+    console.log({ playTime, roomId, localTime, ID, movie });
     if (tokenId === banner.id) {
       socket.emit("timing", { playTime, roomId, localTime, ID, movie });
     }

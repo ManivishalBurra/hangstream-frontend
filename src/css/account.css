@@ -37,6 +37,7 @@
 }
 .account-content .table td,.account-content .table th,.account-box .table td,.account-box .table th{
     border: none;
+    cursor: pointer;
 }
 .account-info{
     width: 80%;
@@ -49,6 +50,8 @@
     display: flex;
 }
 .account-box{
+    transition: 1s;
+    height: auto;
     margin-bottom: 20px;
     width: 90%;
     border-radius: 45px;
