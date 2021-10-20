@@ -94,7 +94,9 @@ const Account = (props) => {
                 profilepic={user.profilepic}
               />
             )}
-            {clicked == "Notifications" && <Notification />}
+            {clicked == "Notifications" && (
+              <Notification useremail={user.email} />
+            )}
           </div>
         </div>
       </div>

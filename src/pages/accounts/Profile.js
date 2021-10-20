@@ -30,7 +30,7 @@ const Profile = (props) => {
               <Link to="/movies">watch more...</Link>
             </div>
             <div className="account-box center column">
-              <h6>Movies</h6>
+              <h6>Videos</h6>
               <div className="pie">
                 <PieChart
                   data={[{ title: "movies", value: 8000, color: "#E38627" }]}
@@ -43,7 +43,7 @@ const Profile = (props) => {
                 />
                 <h3>58%</h3>
               </div>
-              <p>movies added by you</p>
+              <p>videos added by you</p>
             </div>
           </div>
           <div className="col-lg-6">
