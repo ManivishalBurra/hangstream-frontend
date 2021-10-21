@@ -11,6 +11,7 @@ const Navbar = () => {
   const history = useHistory();
   var userid = localStorage.getItem("tokenId");
   var { theme, setTheme } = useContext(Theme);
+  const [searchbar, setSearchbar] = useState("searchbar-close");
   useEffect(() => {
     if (!userid) {
       history.push("/");
@@ -24,7 +25,6 @@ const Navbar = () => {
     localStorage.removeItem("tokenId");
     history.push("/");
   }
-  function SearchBar() {}
   const [darkStatus, setDarkStatus] = useState(false);
   function Themer() {
     if (!darkStatus) {
@@ -114,8 +114,11 @@ const Navbar = () => {
                         )}
                       </Link>
                     </li>
-                    <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
-                      <Link class="nav-link " onClick={SearchBar}>
+                    <li class=" pl-4 pl-md-0 ml-0 ml-md-4">
+                      <Link
+                        class="nav-link "
+                        onClick={() => setSearchbar("searchbar-expand")}
+                      >
                         {darkStatus ? (
                           <SearchIcon
                             style={{
@@ -127,6 +130,13 @@ const Navbar = () => {
                           <SearchIcon className="theme-choice" />
                         )}
                       </Link>
+                      <input
+                        className={searchbar}
+                        name="episode"
+                        placeholder="Search user or movie"
+                        value=""
+                        onBlur={() => setSearchbar("searchbar-close")}
+                      />
                     </li>
                   </ul>
                 </div>
