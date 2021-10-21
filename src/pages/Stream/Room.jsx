@@ -13,10 +13,18 @@ import ReactPlayer from "react-player";
 import Box from "../../components/Box/Box";
 import "../../css/room.css";
 import axios from "axios";
+<<<<<<< HEAD
 import receive from "../../sounds/sendmessages.wav";
 import send from "../../sounds/sendmessages.wav";
 const duration = require("pendel");
 let socket;
+=======
+import receive from "../../sounds/receive.mp3";
+import send from "../../sounds/sentmessage.mp3";
+const duration = require("pendel");
+let socket;
+
+>>>>>>> 77c078e5bba0542569d9c586e5388552401241fb
 const Room = (props) => {
   const history = useHistory();
   var { theme, setTheme } = useContext(Theme);
@@ -32,7 +40,10 @@ const Room = (props) => {
   var playTime = "";
   var localTime = "";
   const myvideo = useRef(null);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 77c078e5bba0542569d9c586e5388552401241fb
   var user = localStorage.getItem("tokenId");
   var x = "";
   const [boxState, setBoxState] = useState(false);
@@ -126,10 +137,21 @@ const Room = (props) => {
           Number(differenceInTime.minutes) * 60 +
           Number(differenceInTime.seconds);
         var streamerPlayTime = Number(payload.playTime) + syncDifference;
+<<<<<<< HEAD
         if (payload.movie !== "" && Math.abs(streamerPlayTime - playTime) > 1) {
           myvideo.current.seekTo(streamerPlayTime, "seconds");
           setPlay(true);
         } else if (Math.abs(streamerPlayTime - playTime) > 2) {
+=======
+        console.log(payload.movie);
+        console.log(Math.abs(streamerPlayTime - playTime));
+        if (payload.movie !== "" && Math.abs(streamerPlayTime - playTime) > 1) {
+          //for online
+          myvideo.current.seekTo(streamerPlayTime, "seconds");
+          setPlay(true);
+        } else if (Math.abs(streamerPlayTime - playTime) > 1) {
+          //for offline
+>>>>>>> 77c078e5bba0542569d9c586e5388552401241fb
           myvideo.current.seekTo(streamerPlayTime, "seconds");
         }
       }
@@ -180,6 +202,10 @@ const Room = (props) => {
     localTime = d.toLocaleTimeString();
     var ID = banner.id;
     var movie = banner.movieName;
+<<<<<<< HEAD
+=======
+    console.log({ playTime, roomId, localTime, ID, movie });
+>>>>>>> 77c078e5bba0542569d9c586e5388552401241fb
     if (tokenId === banner.id) {
       socket.emit("timing", { playTime, roomId, localTime, ID, movie });
     }
