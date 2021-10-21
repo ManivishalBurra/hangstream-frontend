@@ -25,17 +25,16 @@ form{
     border-radius: 20px;
     position: relative;
     padding-top: 20px;
+    
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
-    scrollbar-width: none;
 }
 .video-main{
     height: 650px;
     width: 100%;
     background-color: black;
     border-radius: 20px;
-    overflow: hidden;
 }
 .messagebox{
     position: relative;
@@ -63,7 +62,6 @@ form{
     padding:0 5px;
     width: 100%;
     overflow-y: scroll;
-    scrollbar-width: none;
 }
 .usermsg{
     padding: 8px 20px;
@@ -82,7 +80,7 @@ input:focus
 }
 iframe,object{
     border: none;
-    
+    border-radius: 20px;
 }
 .typing{
     font-size: 15px;

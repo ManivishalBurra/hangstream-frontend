@@ -12,8 +12,6 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import FilterDramaIcon from '@material-ui/icons/FilterDrama';
-import HdIcon from '@material-ui/icons/Hd';
 import "../../css/movie.css";
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
@@ -27,9 +25,6 @@ const Movies = () => {
   const [ind,setInd] = useState(0);
   const myvideo = useRef(null);
   const history = useHistory();
-  const [banner, setBanner] = useState({});
-  const tokenId = localStorage.getItem("tokenId");
-  const [privateStatus,setPrivateStatus] = useState(false);
   var arr=[];
   useEffect(() => {
    axios.get(`${BASE_URL}/movies/movieslist`).then(async (res) => {
@@ -48,20 +43,8 @@ const Movies = () => {
       else{
 
       }
-    });
-    axios.post(`${BASE_URL}/home/getinfo`, { id: tokenId }).then((res) => {
-
-
-      if (res.data.length > 0 && res.data[0].id === tokenId) {
-        setBanner({ ...res.data[0] });
-        if(res.data[0].email.includes("@hyderabad.bits-pilani.ac.in"))setPrivateStatus(true);
-      }
-      else {
-        history.push("/");
-      }
-    });
-  }, []);
-
+    })
+  }, [])
   function PlayTrailer(e) {
     var str = Number(e.target.id.substring(4));
     console.log(e.target);
@@ -120,7 +103,7 @@ const Movies = () => {
           light={true}
         />
         </div>
-        <h6 className={"non-hover-h6 "+theme+"-h6"}>{list.movieName}</h6>
+        <h6 className={"non-hover-h6 "+theme+"-h6"}>{list.movieName.substring(0,16)}</h6>
         <div className="stream-option-main backdrop-blur-black" onMouseOver={PlayTrailer} onMouseOut={StopTrailer} id={"min-" + index}>
         <Tippy content="Play" className="tipsy-topsy">
         <button className="stream-btn" key={index} onClick={Startstream} id={"btn-" + index} ><PlayArrowIcon id={"ftn-" + index}/></button>
@@ -150,16 +133,13 @@ const Movies = () => {
   }
   return <>
     <Navbar />
-    <div id={theme+"-main"} style={{height:"100%"}}>
     <div className="row movie-main" id={theme+"-main"}>
+
       {movies.map(Movielists)}
+
     </div>
-    {privateStatus && <div className="private-enter private">
-    <Tippy content="Enter bitsian netflix">
-      <button onClick={()=>{history.push("/private")}}>Enter bitsian netflix  <FilterDramaIcon/></button>
-    </Tippy>
-    </div>}
-    </div>
+
+
   </>
 }
 
