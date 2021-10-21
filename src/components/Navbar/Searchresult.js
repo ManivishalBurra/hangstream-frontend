@@ -10,9 +10,9 @@ const SearchResult = (props) => {
   console.log(props);
   const history = useHistory();
   function SendRequest(e) {
-    if (!window.sessionStorage.getItem("user_client")) history.push("/");
+    if (!sessionStorage.getItem("user_client")) history.push("/");
     else {
-      var sender = JSON.parse(window.sessionStorage.getItem("user_client"));
+      var sender = JSON.parse(sessionStorage.getItem("user_client"));
       console.log(sender);
       axios
         .post(`${BASE_URL}/notifications/addrequest`, {

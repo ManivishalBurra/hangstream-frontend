@@ -42,8 +42,8 @@ const Home = (props) => {
             res.data.length > 0 &&
             res.data[0].id === props.match.params.googleId
           ) {
-            if (!window.sessionStorage.getItem("user_client")) {
-              window.sessionStorage.setItem(
+            if (!sessionStorage.getItem("user_client")) {
+              sessionStorage.setItem(
                 "user_client",
                 JSON.stringify({ ...res.data[0] })
               );
