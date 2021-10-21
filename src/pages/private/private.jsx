@@ -2,8 +2,11 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import ReactPlayer from 'react-player'
 import streamcam from "../../images/streamcam.png";
+import Info from '../../components/EpInfo/epinfo'
 import Navbar from '../../components/Navbar/navbar'
+import {filePathMovie} from '../../userContext/userdetails'
 import Tippy from '@tippyjs/react';
+import Box from '../../components/Box/Box'
 import 'tippy.js/dist/tippy.css';
 import { UserRoom } from '../../userContext/userdetails'
 import { BASE_URL } from '../../constants/index'
@@ -12,27 +15,26 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import FilterDramaIcon from '@material-ui/icons/FilterDrama';
-import HdIcon from '@material-ui/icons/Hd';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import "../../css/movie.css";
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
-const Movies = () => {
+const Private = () => {
   const [movies, setMovies] = useState([]);
   const [clay,setClay] = useState(false);
-  var { roomId, setRoomId } = useContext(UserRoom);
   var { theme,setTheme } = useContext(Theme); 
   const [buttonStatus, setButtonStatus] = useState(false);
-  const [ind,setInd] = useState(0);
-  const myvideo = useRef(null);
+  const [boxState, setBoxState] = useState(false);
+  const {videoFilePath, setVideoFilePath} = useContext(filePathMovie);
   const history = useHistory();
   const [banner, setBanner] = useState({});
   const tokenId = localStorage.getItem("tokenId");
   const [privateStatus,setPrivateStatus] = useState(false);
+  const [ind,setInd] = useState(-1);
   var arr=[];
   useEffect(() => {
-   axios.get(`${BASE_URL}/movies/movieslist`).then(async (res) => {
+   axios.get(`${BASE_URL}/private/privatelist`).then(async (res) => {
 
       if (res.data) {
         setMovies(res.data);
@@ -50,11 +52,10 @@ const Movies = () => {
       }
     });
     axios.post(`${BASE_URL}/home/getinfo`, { id: tokenId }).then((res) => {
-
-
       if (res.data.length > 0 && res.data[0].id === tokenId) {
         setBanner({ ...res.data[0] });
         if(res.data[0].email.includes("@hyderabad.bits-pilani.ac.in"))setPrivateStatus(true);
+        else history.push("/movies");
       }
       else {
         history.push("/");
@@ -62,66 +63,36 @@ const Movies = () => {
     });
   }, []);
 
-  function PlayTrailer(e) {
-    var str = Number(e.target.id.substring(4));
-    console.log(e.target);
-    setButtonStatus(true);
-    arr=clay;
-    if(str)
-    {
-     arr[str]=true;
-     setInd(str);
-    }
-    else if(str==0)
-    {
-      arr[str]=true;
-      setInd(str);
-    }
-    setClay(arr);
-
-    //console.log(clay,"clay");
-    if(myvideo.current.getCurrentTime()<60){
-    myvideo.current.seekTo(60,'seconds');
-    }
+  function display(state) {
+    setBoxState(false);
+    setInd(-1);
   }
-  function StopTrailer(e) {
-    setButtonStatus(false);
-    arr=clay;
-    arr[ind]=false;
-    setClay(arr);
+  function CreateRoomDiv() {
+    setBoxState(true);
   }
   function Startstream(e) {
     var str = Number(e.target.id.substring(4));
-    var tokenId = localStorage.getItem("tokenId");
-    const roomid = uuidv4();
-    if (tokenId) {
-      axios.post(`${BASE_URL}/home/roomstream`, { url: movies[str].movieUrl, movieName: movies[str].movieName, banner: movies[str].banner, roomid: roomid, id: tokenId, source: "movies" }).then((res) => {
-        if (res.data) {
-          setRoomId(roomid);
-          history.push(`/room/${roomid}`);
-        }
-      })
-    }
-    else {
-      history.push("/");
-    }
+    setVideoFilePath(movies[str].movieUrl[0]);
+    history.push("/watch");
+  }
+  function ShowInfo(e) {
+    var str = Number(e.target.id.substring(4));
+    setInd(str);
   }
   function Movielists(list, index) {
-    return <div className=" movie-thumbnail">
-      <div className="movie-tile" key={index} id={index}>
-        <div className="react-player-movies">
-        <ReactPlayer
-          ref={myvideo}
-          width="100%"
-          height="100%"
-          url={list.banner}
-          playing={clay[index]}
-          loop={true}
-          light={true}
+    return <div className=" movie-thumbnail movie-thumbnail-private" style={{height:"330px"}}>
+      <div className="movie-tile movie-tile-private" key={index} id={index}>
+        <div className="react-player-movies" id="drive-player">
+        <img src={list.poster} className="drive-poster" />
+        <iframe 
+        src={list.banner+"?t=1552s"}
+        width="100%" 
+        height="100%"
+        frameborder="0" scrolling="no" seamless=""
         />
         </div>
         <h6 className={"non-hover-h6 "+theme+"-h6"}>{list.movieName}</h6>
-        <div className="stream-option-main backdrop-blur-black" onMouseOver={PlayTrailer} onMouseOut={StopTrailer} id={"min-" + index}>
+        <div className="stream-option-main backdrop-blur-black" id={"min-" + index}>
         <Tippy content="Play" className="tipsy-topsy">
         <button className="stream-btn" key={index} onClick={Startstream} id={"btn-" + index} ><PlayArrowIcon id={"ftn-" + index}/></button>
         </Tippy>
@@ -131,18 +102,20 @@ const Movies = () => {
         <Tippy content="Dislike" className="tipsy-topsy">
         <button className="stream-btn" id={"din-" + index} ><ThumbDownIcon/></button>
         </Tippy>
-        <Tippy content="Info">
-        <button className="stream-btn"><InfoOutlinedIcon/></button>
+        <Tippy content="Episodes & Info">
+        <button className="stream-btn" id={"epn-" + index} onClick={ShowInfo}><InfoOutlinedIcon id={"inf-" + index}/></button>
         </Tippy>
         <div className="title-header" id={"ain-" + index}>
         <h6 className="hover-h6" id={"bin-" + index}>{list.movieName.substring(0,16)}</h6>
         <p className="rating-main" id={"cin-" + index}>IMDB: <span className="ratings">{list.ratings}</span></p>
         </div>
+        <div>
         <p className="genre" id={"din-" + index}>{list.genres.map((genre,index)=>{
           return <>
-          <span>&#8226;{genre}&nbsp;</span>
+          {index<4 && <span>&#8226;{genre}&nbsp;</span>}
           </>
         })}</p>
+        </div>
         <p className="plot" id={"ein-" + index}>{list.plotOutline}</p>
         </div>
       </div>
@@ -154,13 +127,27 @@ const Movies = () => {
     <div className="row movie-main" id={theme+"-main"}>
       {movies.map(Movielists)}
     </div>
-    {privateStatus && <div className="private-enter private">
-    <Tippy content="Enter bitsian netflix">
-      <button onClick={()=>{history.push("/private")}}>Enter bitsian netflix  <FilterDramaIcon/></button>
+    {privateStatus && <div className="private">
+    <Tippy content="Add movies">
+      <button onClick={CreateRoomDiv}><AddCircleOutlineIcon/></button>
     </Tippy>
     </div>}
+    {boxState &&
+        <Box display={display} filePath={false} private={true}/>
+    }
+    {ind>0 && <Info
+      img={movies[ind].poster}
+      ep={movies[ind].episode}
+      movieName={movies[ind].movieName}
+      Urls={movies[ind].movieUrl}
+      rating={movies[ind].ratings}
+      year={movies[ind].year}
+      genre={movies[ind].genres}
+      plotOutline={movies[ind].plotOutline}
+      display={display}
+    />}
     </div>
   </>
 }
 
-export default Movies;
+export default Private;

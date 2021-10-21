@@ -6,9 +6,8 @@ body{
 }
 .movie-main{
     width: 100%;
-    height: 100%;
     background-color: rgb(231, 231, 231);
-    padding: 145px 80px 0 80px;
+    padding: 125px 80px 0 80px;
     margin: 0;
 }
 .stream-option-main{
@@ -110,16 +109,68 @@ body{
   border: none;
   margin-right: 12px;
 }
+.private{
+  position: fixed;
+  bottom: 35px;
+  right: 50px;
+}
+.private button{
+  width: 45px;
+  height: 45px;
+  border: none;
+  background-color: #e5b735;
+  color: black;
+  border-radius: 100%;
+}
+.movie-thumbnail-private{
+  width: 200px!important;
+}
+.movie-tile-private{
+  width: 200px!important;
+}
+
+.movie-tile-private:hover{
+  width: 340px!important; 
+}
+.private-enter button{
+  width: 220px!important;
+  border-radius: 48px!important;
+}
+.drive-poster{
+  transition: 0.5s;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#drive-player iframe{
+  display: none;
+}
+#drive-player{
+  height: 285px!important;
+}
+.movie-tile:hover>#drive-player img{
+  position: absolute;
+  transition: 0.5s;
+  width: 0;
+}
+.movie-tile:hover>#drive-player iframe{
+  display: flex;
+}
+.movie-tile:hover>#drive-player{
+  height: 210px!important;
+  width: 100%; 
+  border-radius: 10px 10px 0 0;
+}
 ::-webkit-scrollbar {
     width: 0px;
     background-color: black;
   }
   ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, .3);
-    border-radius: 10px
+    -webkit-box-shadow: inset 0 0 1px rgba(255, 255, 255, .3);
+    border-radius: 1px
   }
   ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: outset 0 0 6px 20px rgba(0, 0, 0, .3);
+    border-radius: 1px;
+    -webkit-box-shadow: outset 0 0 1px 2px rgba(0, 0, 0, .3);
     background:rgb(101, 164, 103);
   }

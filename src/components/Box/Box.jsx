@@ -30,6 +30,31 @@ const Box = (props) => {
     const [ratings, setRatings] = useState("");
     const [genres, setGenres] = useState([]);
     const [show,setShow] = useState(false);
+    const [image,setImage]=useState("");
+    const [movies,setMovies] = useState([]);
+    const [mov,setmov]=useState([]);
+    const [exist,setExist]=useState(false);
+    const [episode,setEpisode]=useState("");
+    useEffect(()=>{
+        if(props.private)
+        {
+            axios.get(`${BASE_URL}/private/privatelist`).then(async (res) => {
+                if (res.data) {
+                  setMovies(res.data);
+                  
+                }
+              });  
+        }
+        else{
+            axios.get(`${BASE_URL}/movies/movieslist`).then(async (res) => {
+
+                if (res.data) {
+                  setMovies(res.data);
+                    
+                }
+              });
+        }
+    },[]);
     function StreamSubmit(e) {
         console.log(e);
         e.preventDefault();
@@ -66,9 +91,15 @@ const Box = (props) => {
     }
     function UpdateMovieName(e) {
         setName(e.target.value);
+        var m=movies.filter((list)=>{
+            var x=list.movieName.replace(/\s+/g, '').trim().toLowerCase();
+            return x.includes(e.target.value.replace(/\s+/g, '').trim().toLowerCase());
+        })
+        setmov(m);
     }
 
     function GiveSuggestions(e) {
+        setExist(false);
         e.preventDefault();
         const options = {
             method: 'GET',
@@ -90,7 +121,6 @@ const Box = (props) => {
                     {
                     console.log(suggestions);
                     setSuggestions(x);
-                    alert("chi")
                     setShow(true);
                     }
                     else{
@@ -120,7 +150,9 @@ const Box = (props) => {
         setName(l);
         var id = String(suggestions[e.target.id].id.toString());
         setMovieID(id);
-
+        var img=""
+        if(suggestions[e.target.id].i)img = suggestions[e.target.id].i.imageUrl;
+        setImage(img);
         if (id.substring(0, 2) !== "tt") {
             setMovieID("");
             setYear("");
@@ -140,7 +172,7 @@ const Box = (props) => {
             axios.request(options).then(function (response) {
                 console.log(response.status);
                 var genre = response.data.genres;
-                setGenres(...genre);
+                setGenres(genre);
                 var plot = response.data.plotOutline.text;
                 setPlotOutline(plot);
                 var rating = response.data.ratings.rating;
@@ -161,9 +193,44 @@ const Box = (props) => {
 
         }
     }
+
+
+    function UpdateEpisode(e) {
+        setName(e.target.innerHTML)
+        setMovieID(e.target.id);
+        setExist(true);
+        setEnable(false)
+    }
+
+
+    function PrivateUpload(e){
+        e.preventDefault();
+        console.log(genres,"genre");
+        if(!exist){
+        axios.post(`${BASE_URL}/private/upload`, { url: url, ratings: ratings, movieID: movieID, year: year, plotOutline: plotOutline, genres: genres, movieName: movieName, banner: banner,id: tokenId,image:image ,source: "admin" }).then((res) => {
+            if (res.data) {
+                alert("uploaded");
+                props.display(false);
+            }
+        })
+        }
+        else{
+            axios.post(`${BASE_URL}/private/uploadexist`, { url: url,episode:episode,movieID: movieID}).then((res) => {
+                if (res.data) {
+                    alert("uploaded");
+                    props.display(false);
+                }
+            })  
+        }   
+    }
+
+
+
+
     return (
         <div className="login-main box-main center backdrop-blur-black">
             <div className="login-box center column">
+                {exist && <h6>Already exists in our DB,add an episode if you want to...</h6>}
                 {props.filePath ?
                     <>
                         <label for="file-upload" class="custom-file-upload">
@@ -187,19 +254,29 @@ const Box = (props) => {
                         </div>
                         <input
                             name="movie url"
-                            placeholder="Movie url"
+                            placeholder="Url"
                             value={url}
                             onChange={(e) => { setUrl(e.target.value); setBanner(e.target.value) }}
                             label="Drive url"
                         />
-                        <button id="Submit-btn" onClick={StreamSubmit} disabled={enable}>Stream now</button>
+                        {exist &&
+                            <input
+                            name="episode"
+                            placeholder="episode no."
+                            value={episode}
+                            onChange={(e) => { setEpisode(e.target.value);}}
+                            />
+                        }
+                        {!props.private?<><button id="Submit-btn" onClick={StreamSubmit} disabled={enable}>Stream now</button>
                         <a>or</a>
-                        <button id="Submit-btn" style={{ marginTop: "10px" }} onClick={StreamFile}>Stream by filepath</button>
-
+                        <button id="Submit-btn" style={{ marginTop: "10px" }} onClick={StreamFile}>Stream by filepath</button></>
+                        :<button id="Submit-btn" onClick={PrivateUpload} disabled={enable}>Upload</button>
+                        }
+                        
                     </form>}
                 <CloseIcon className="close-btn" onClick={() => { props.display(false) }} />
             </div>
-            {show && <div className="suggestions" style={show?{transition: "0.5s",width:"450px"}:{transition: "0.5s",width:"0"}}>
+            {show ? <div className="suggestions" style={show?{transition: "0.5s",width:"450px"}:{transition: "0.5s",width:"0"}}>
                 {suggestions.map((list, index) => {
                     return <>
                         <div className="suggest-main center column">
@@ -212,8 +289,23 @@ const Box = (props) => {
                         </div>
                     </>
                 })}
+            </div>:
+            <div className="suggestions" style={mov.length>0?{transition: "0.5s",width:"450px"}:{transition: "0.5s",width:"0"}}>
+                {mov.map((list, index) => {
+                    return <>
+                        <div className="suggest-main center column">
+                            <div className="suggest-img center">
+                                 <img src={list.poster} alt={list.movieName} />
+                            </div>
+                            <div className="updateDB-btn" onClick={UpdateEpisode}>
+                                <p id={list.movieID}>{list.movieName}</p>
+                            </div>
+                        </div>
+                    </>
+                })}
             </div>
             }
+
             <ToastContainer
                     position="top-right"
                     autoClose={3000}
