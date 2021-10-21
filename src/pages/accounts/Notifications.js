@@ -9,19 +9,13 @@ import "../../css/notifications.css";
 const Notification = (props) => {
   const tokenId = localStorage.getItem("tokenId");
   const [requests, setRequests] = useState([]);
-  const [preloader, setPreloader] = useState(true);
   useEffect(() => {
     axios
       .post(`${BASE_URL}/notifications/getnotifications`, {
         useremail: props.useremail,
       })
       .then((res) => {
-        setPreloader(false);
-        console.log(res);
-        if (res.data.length > 0) {
-          if (res.data[0].requests.length > 0)
-            setRequests(res.data[0].requests);
-        }
+        setRequests(res.data[0].requests);
       });
   }, []);
   function requestList(list) {
@@ -42,18 +36,14 @@ const Notification = (props) => {
   }
   return (
     <>
-      {preloader ? (
+      {!requests.length ? (
         <>
           <NotificationShow />
         </>
       ) : (
         <div className="notifications-tabs">
           <h5>Requests</h5>
-          {requests.length > 0 ? (
-            requests.map(requestList)
-          ) : (
-            <p>no new notifications</p>
-          )}
+          {requests.map(requestList)}
         </div>
       )}
     </>
