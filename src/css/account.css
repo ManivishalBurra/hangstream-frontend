@@ -1,6 +1,6 @@
 .account-main{
     height: 100vh;
-    padding-top: 60px;
+    margin-top: 70px;
     background-image: url('../images/account background.png');
     background-size: cover;
 }
@@ -37,22 +37,18 @@
 }
 .account-content .table td,.account-content .table th,.account-box .table td,.account-box .table th{
     border: none;
-    cursor: pointer;
 }
 .account-info{
     width: 80%;
+    height: 85%;
     overflow-y: scroll;
     padding: 15px;
-    scrollbar-width: none;
 }
 .content-main{
     width: 100%;
     display: flex;
-    height: 85%;
 }
 .account-box{
-    transition: 1s;
-    height: auto;
     margin-bottom: 20px;
     width: 90%;
     border-radius: 45px;
