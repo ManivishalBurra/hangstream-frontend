@@ -33,10 +33,6 @@ const Room = (props) => {
   var playTime = "";
   var localTime = "";
   const myvideo = useRef(null);
-<<<<<<< HEAD
-
-=======
->>>>>>> 77c078e5bba0542569d9c586e5388552401241fb
   var user = localStorage.getItem("tokenId");
   var x = "";
   const [boxState, setBoxState] = useState(false);
