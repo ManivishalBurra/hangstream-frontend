@@ -10,7 +10,7 @@ import { Theme } from "../../userContext/userdetails";
 import axios from "axios";
 import { BASE_URL } from "../../constants/index";
 import { FunctionsRounded } from "@material-ui/icons";
-import SearchResult from "./Searchresult";
+//import SearchResult from "./Searchresult";
 
 const Navbar = () => {
   const history = useHistory();
@@ -182,9 +182,9 @@ const Navbar = () => {
         </div>
         <div className="gap-filler" />
       </div>
-      {searchResult.length > 0 && searchText.length > 0 && (
+      {/* {searchResult.length > 0 && searchText.length > 0 && (
         <SearchResult result={searchResult} />
-      )}
+      )} */}
     </>
   );
 };
