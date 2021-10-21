@@ -48,7 +48,6 @@ const Home = (props) => {
                 JSON.stringify({ ...res.data[0] })
               );
             }
-            console.log(res);
             setBanner({ ...res.data[0] });
           } else {
             history.push("/");
