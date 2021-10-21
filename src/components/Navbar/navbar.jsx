@@ -10,7 +10,7 @@ import { Theme } from "../../userContext/userdetails";
 import axios from "axios";
 import { BASE_URL } from "../../constants/index";
 import { FunctionsRounded } from "@material-ui/icons";
-import SearchResult from "./Searchresult";
+// import SearchResult from "./Searchresult";
 
 const Navbar = () => {
   const history = useHistory();
@@ -18,19 +18,19 @@ const Navbar = () => {
   var { theme, setTheme } = useContext(Theme);
   const [darkStatus, setDarkStatus] = useState(false);
   const [searchbar, setSearchbar] = useState("searchbar-close");
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const [searchText, SetSearchText] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
-  useEffect(() => {
-    if (!sessionStorage.getItem("users")) {
-      axios.get(`${BASE_URL}/home/getusers`).then((res) => {
-        if (res) {
-          sessionStorage.setItem("users", JSON.stringify(res));
-          setUsers(JSON.parse(sessionStorage.getItem("users")).data);
-        }
-      });
-    } else setUsers(JSON.parse(sessionStorage.getItem("users")).data);
-  }, []);
+  // const [searchResult, setSearchResult] = useState([]);
+  // useEffect(() => {
+  //   if (!sessionStorage.getItem("users")) {
+  //     axios.get(`${BASE_URL}/home/getusers`).then((res) => {
+  //       if (res) {
+  //         sessionStorage.setItem("users", JSON.stringify(res));
+  //         setUsers(JSON.parse(sessionStorage.getItem("users")).data);
+  //       }
+  //     });
+  //   } else setUsers(JSON.parse(sessionStorage.getItem("users")).data);
+  // }, []);
 
   useEffect(() => {
     if (!userid) {
@@ -57,13 +57,13 @@ const Navbar = () => {
 
   function DynamicSearch(e) {
     SetSearchText(e.target.value);
-    var u = users.filter((list) => {
-      var x = list.username.replace(/\s+/g, "").trim().toLowerCase();
-      return x.includes(
-        e.target.value.replace(/\s+/g, "").trim().toLowerCase()
-      );
-    });
-    setSearchResult(u);
+    // var u = users.filter((list) => {
+    //   var x = list.username.replace(/\s+/g, "").trim().toLowerCase();
+    //   return x.includes(
+    //     e.target.value.replace(/\s+/g, "").trim().toLowerCase()
+    //   );
+    // });
+    // setSearchResult(u);
   }
 
   return (
@@ -182,9 +182,9 @@ const Navbar = () => {
         </div>
         <div className="gap-filler" />
       </div>
-      {searchResult.length > 0 && searchText.length > 0 && (
+      {/* {searchResult.length > 0 && searchText.length > 0 && (
         <SearchResult result={searchResult} />
-      )}
+      )} */}
     </>
   );
 };
