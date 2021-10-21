@@ -22,14 +22,14 @@ const Navbar = () => {
   const [searchText, SetSearchText] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   useEffect(() => {
-    if (!window.sessionStorage.getItem("users")) {
+    if (!localStorage.getItem("users")) {
       axios.get(`${BASE_URL}/home/getusers`).then((res) => {
         if (res) {
-          window.sessionStorage.setItem("users", JSON.stringify(res));
-          setUsers(JSON.parse(window.sessionStorage.getItem("users")).data);
+          localStorage.setItem("users", JSON.stringify(res));
+          setUsers(JSON.parse(localStorage.getItem("users")).data);
         }
       });
-    } else setUsers(JSON.parse(window.sessionStorage.getItem("users")).data);
+    } else setUsers(JSON.parse(localStorage.getItem("users")).data);
   }, []);
 
   useEffect(() => {
