@@ -7,11 +7,18 @@ import WbSunnyIcon from "@material-ui/icons/WbSunny";
 import Brightness2Icon from "@material-ui/icons/Brightness2";
 import logo from "../../images/hangouts.png";
 import { Theme } from "../../userContext/userdetails";
+import SearchResult from "./searchresult";
+import axios from "axios";
+import { BASE_URL } from "../../constants/index";
+
 const Navbar = () => {
   const history = useHistory();
   var userid = localStorage.getItem("tokenId");
   var { theme, setTheme } = useContext(Theme);
   const [searchbar, setSearchbar] = useState("searchbar-close");
+  const [users, setUsers] = useState([]);
+  const [searchText, SetSearchText] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
   useEffect(() => {
     if (!userid) {
       history.push("/");
@@ -19,6 +26,14 @@ const Navbar = () => {
     if (theme === "dark-theme") {
       setDarkStatus(true);
     }
+    if (!sessionStorage.getItem("users")) {
+      axios.get(`${BASE_URL}/home/getusers`).then((res) => {
+        if (res) {
+          sessionStorage.setItem("users", JSON.stringify(res));
+          setUsers(JSON.parse(sessionStorage.getItem("users")).data);
+        }
+      });
+    } else setUsers(JSON.parse(sessionStorage.getItem("users")).data);
   }, []);
 
   function Logout() {
@@ -34,6 +49,10 @@ const Navbar = () => {
     }
     setDarkStatus(!darkStatus);
   }
+  function DynamicSearch(e) {
+    SetSearchText(e.target.value);
+  }
+
   return (
     <div>
       <div
@@ -134,7 +153,8 @@ const Navbar = () => {
                         className={searchbar}
                         name="episode"
                         placeholder="Search user or movie"
-                        value=""
+                        value={searchText}
+                        onChange={DynamicSearch}
                         onBlur={() => setSearchbar("searchbar-close")}
                       />
                     </li>
