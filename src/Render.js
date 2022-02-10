@@ -15,7 +15,7 @@ import {filePathMovie} from './userContext/userdetails'
 function Render() {
   const [roomId,setRoomId] = useState("");
   const [theme,setTheme]= useState("light-theme");
-  const [videoFilePath, setVideoFilePath] = useState(null);
+  const [videoFilePath, setVideoFilePath] = useState("");
   return (
     <Router>
      <UserRoom.Provider value={{roomId,setRoomId}}>
@@ -25,9 +25,9 @@ function Render() {
       <Route exact path="/home/:googleId" component={Home} />
       <Route path="/account" component={Account} />
       <Route  path="/room/:roomid" component={Room} />
-      <Route  path="/movies" component={Movies} />
-      <Route  path="/watch" component={Drive} />
-      <Route  path="/private" component={Private} />
+      <Route  path="/streamflix" component={Movies} />
+      <Route  path="/watch/:movieid" component={Drive} />
+      {/* <Route  path="/private" component={Private} /> */}
       <Route exact path="/" component={Login} />
       <Route  path="*" component={Error} />
       </Switch>

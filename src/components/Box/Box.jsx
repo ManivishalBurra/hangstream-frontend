@@ -36,16 +36,6 @@ const Box = (props) => {
     const [exist,setExist]=useState(false);
     const [episode,setEpisode]=useState("");
     useEffect(()=>{
-        if(props.private)
-        {
-            axios.get(`${BASE_URL}/private/privatelist`).then(async (res) => {
-                if (res.data) {
-                  setMovies(res.data);
-                  
-                }
-              });  
-        }
-        else{
             axios.get(`${BASE_URL}/movies/movieslist`).then(async (res) => {
 
                 if (res.data) {
@@ -53,13 +43,12 @@ const Box = (props) => {
                     
                 }
               });
-        }
     },[]);
     function StreamSubmit(e) {
         console.log(e);
         e.preventDefault();
         const roomid = uuidv4();
-        axios.post(`${BASE_URL}/home/roomstream`, { url: url, ratings: ratings, movieID: movieID, year: year, plotOutline: plotOutline, genres: genres, movieName: movieName, banner: banner, roomid: roomid, id: tokenId, source: "admin" }).then((res) => {
+        axios.post(`${BASE_URL}/home/roomstream`, {url: url,roomid:roomid, ratings: ratings, movieID: movieID, year: year, plotOutline: plotOutline, genres: genres, movieName: movieName, banner: banner,id: tokenId,image:image ,source: "admin" }).then((res) => {
             if (res.data) {
                 setRoomId(roomid);
                 history.push(`/room/${roomid}`);
@@ -71,6 +60,7 @@ const Box = (props) => {
     const [filePath, setFilePath] = useState(false);
     const { videoFilePath, setVideoFilePath } = useContext(filePathMovie);
     const handleVideoUpload = (event) => {
+        console.log(event)
         setVideoFilePath(window.URL.createObjectURL(event.target.files[0]));
         props.display(false)
     };
