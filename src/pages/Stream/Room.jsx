@@ -5,13 +5,15 @@ import "material-react-toastify/dist/ReactToastify.css";
 import Navbar from "../../components/Navbar/navbar";
 import io from "socket.io-client";
 import SendIcon from "@material-ui/icons/Send";
-import ChatIcon from '@material-ui/icons/Chat';
+import ChatIcon from "@material-ui/icons/Chat";
 import { UserRoom } from "../../userContext/userdetails";
 import { Theme } from "../../userContext/userdetails";
 import { filePathMovie } from "../../userContext/userdetails";
+import { filePathSub } from "../../userContext/userdetails";
 import { BASE_URL } from "../../constants/index";
 import ReactPlayer from "react-player";
 import Box from "../../components/Box/Box";
+import subs from "../../models/subtitles.vtt"
 import "../../css/room.css";
 import axios from "axios";
 import receive from "../../sounds/receive.mp3";
@@ -24,6 +26,7 @@ const Room = (props) => {
   var { theme, setTheme } = useContext(Theme);
   var { roomId, setRoomId } = useContext(UserRoom);
   const { videoFilePath, setVideoFilePath } = useContext(filePathMovie);
+  const { subFilePath, setSubFilePath } = useContext(filePathSub);
   const roomid = props.match.params.roomid;
   const tokenId = localStorage.getItem("tokenId");
   const [banner, setBanner] = useState({});
@@ -227,6 +230,18 @@ const Room = (props) => {
                 onProgress={Progress}
                 onDuration={Duration}
                 onEnded={End}
+                config={{
+                  file: {
+                    tracks: [
+                      {
+                        kind: "subtitles",
+                        src: subFilePath,
+                        srcLang: "en",
+                        default: true,
+                      },
+                    ],
+                  },
+                }}
               />
             ) : (
               <iframe
@@ -244,13 +259,16 @@ const Room = (props) => {
         </div>
 
         <div className={chatOpen}>
-          
-            <button className={"chat-open"+" chat-open-corner"+chatOpen} onClick={() => 
-              {
-                if(chatOpen==="chat-area")setChatOpen("chat-area-close")
-                else setChatOpen("chat-area")
-                }}><ChatIcon/></button>
-            { chatOpen&&
+          <button
+            className={"chat-open" + " chat-open-corner" + chatOpen}
+            onClick={() => {
+              if (chatOpen === "chat-area") setChatOpen("chat-area-close");
+              else setChatOpen("chat-area");
+            }}
+          >
+            <ChatIcon />
+          </button>
+          {chatOpen && (
             <div className="chat-box column" id={theme + "-chat"}>
               <div class="messages" id="msg">
                 {chat.map((chat, index) => {
@@ -303,8 +321,9 @@ const Room = (props) => {
                   </button>
                 </form>
               </div>
-            </div>}
-          
+            </div>
+          )}
+
           <ToastContainer
             position="top-right"
             autoClose={3000}
