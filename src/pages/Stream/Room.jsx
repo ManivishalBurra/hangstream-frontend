@@ -13,7 +13,6 @@ import { filePathSub } from "../../userContext/userdetails";
 import { BASE_URL } from "../../constants/index";
 import ReactPlayer from "react-player";
 import Box from "../../components/Box/Box";
-import subs from "../../models/subtitles.vtt"
 import "../../css/room.css";
 import axios from "axios";
 import receive from "../../sounds/receive.mp3";
