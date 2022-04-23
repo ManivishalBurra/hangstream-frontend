@@ -7,7 +7,7 @@ import Room from './pages/Stream/Room'
 import Login from './pages/Login/Login'
 import Movies from './pages/Movies/movie'
 import Error from './pages/404/error'
-import Private from './pages/private/private';
+import Audio from './components/AudioCall/audio'
 import Drive from './pages/Drive/drive'
 import {UserRoom} from './userContext/userdetails'
 import {Theme} from './userContext/userdetails'
@@ -30,9 +30,11 @@ function Render() {
       <Route  path="/room/:roomid" component={Room} />
       <Route  path="/streamflix" component={Movies} />
       <Route  path="/watch/:movieid" component={Drive} />
+      <Route  path="/audio" component={Audio} />
       {/* <Route  path="/private" component={Private} /> */}
       <Route exact path="/" component={Login} />
       <Route  path="*" component={Error} />
+      
       </Switch>
       </filePathSub.Provider>
       </filePathMovie.Provider>

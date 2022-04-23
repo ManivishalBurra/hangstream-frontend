@@ -163,7 +163,7 @@ const Navbar = () => {
                           placeholder="Search user or movie"
                           value={searchText}
                           onChange={DynamicSearch}
-                          onBlur={() => setSearchbar("searchbar-close")}
+                          onBlur={() => {setSearchbar("searchbar-close");SetSearchText("");setSearchResult([])}}
                           autoComplete="off"
                         />
                       </li>
