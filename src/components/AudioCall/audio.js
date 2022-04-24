@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
+import AudioCall from "../AudioCall/audioCall";
 
 const Audio = (props) => {
+    const [inCall,setInCall] = useState(false);
     return (
-        <h1>HELLO WORLD</h1>
+        <>
+        <button
+            onClick={()=>setInCall(true)}
+        >
+            Join call
+        </button>
+        {inCall?<AudioCall setInCall={setInCall}/>:"waiting bro"}
+        </>
     );
 
 };
