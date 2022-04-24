@@ -8,8 +8,8 @@ import {
   channelName,
 } from "./settings.js";
 import { Grid } from "@material-ui/core";
-import Video from "./Video";
-import Controls from "./Controls";
+import Video from "./video";
+import Controls from "./controls";
 
 export default function VideoCall(props) {
   const { setInCall } = props;
