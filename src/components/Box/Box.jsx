@@ -5,11 +5,13 @@ import CloseIcon from '@material-ui/icons/Close';
 import axios from 'axios';
 import { BASE_URL } from '../../constants/index';
 import { UserRoom } from '../../userContext/userdetails'
+import {filePathSub} from "../../userContext/userdetails";
 import { filePathMovie } from '../../userContext/userdetails'
 import DescriptionIcon from '@material-ui/icons/Description';
 import { ToastContainer, toast } from "material-react-toastify";
 import "material-react-toastify/dist/ReactToastify.css";
 import SearchIcon from '@material-ui/icons/Search';
+import { default as toWebVTT } from "srt-webvtt";
 import "../../css/box.css"
 const Box = (props) => {
     const history = useHistory();
@@ -36,16 +38,6 @@ const Box = (props) => {
     const [exist,setExist]=useState(false);
     const [episode,setEpisode]=useState("");
     useEffect(()=>{
-        if(props.private)
-        {
-            axios.get(`${BASE_URL}/private/privatelist`).then(async (res) => {
-                if (res.data) {
-                  setMovies(res.data);
-                  
-                }
-              });  
-        }
-        else{
             axios.get(`${BASE_URL}/movies/movieslist`).then(async (res) => {
 
                 if (res.data) {
@@ -53,13 +45,12 @@ const Box = (props) => {
                     
                 }
               });
-        }
     },[]);
     function StreamSubmit(e) {
         console.log(e);
         e.preventDefault();
         const roomid = uuidv4();
-        axios.post(`${BASE_URL}/home/roomstream`, { url: url, ratings: ratings, movieID: movieID, year: year, plotOutline: plotOutline, genres: genres, movieName: movieName, banner: banner, roomid: roomid, id: tokenId, source: "admin" }).then((res) => {
+        axios.post(`${BASE_URL}/home/roomstream`, {url: url,roomid:roomid, ratings: ratings, movieID: movieID, year: year, plotOutline: plotOutline, genres: genres, movieName: movieName, banner: banner,id: tokenId,image:image ,source: "admin" }).then((res) => {
             if (res.data) {
                 setRoomId(roomid);
                 history.push(`/room/${roomid}`);
@@ -69,12 +60,28 @@ const Box = (props) => {
     }
 
     const [filePath, setFilePath] = useState(false);
-    const { videoFilePath, setVideoFilePath } = useContext(filePathMovie);
+    const {videoFilePath, setVideoFilePath } = useContext(filePathMovie);
+    const {subFilePath, setSubFilePath } = useContext(filePathSub);
     const handleVideoUpload = (event) => {
+        
         setVideoFilePath(window.URL.createObjectURL(event.target.files[0]));
-        props.display(false)
     };
-
+    const handleSubUpload = (event) => {
+        console.log(event)
+        try {
+            async function asyncCall(){
+            const textTrackUrl = await toWebVTT(event.target.files[0]); // this function accepts a parameer of SRT subtitle blob/file object
+            setSubFilePath(textTrackUrl)
+            console.log(textTrackUrl)
+            props.display(false)
+            }
+            asyncCall()
+            // video.textTracks[0].mode = "show"; // Start showing subtitle to your track
+          } catch (e) {
+            console.error(e.message);
+          }
+        
+    };
     function StreamFile(e) {
         setName("");
         setBanner("");
@@ -236,6 +243,10 @@ const Box = (props) => {
                         <label for="file-upload" class="custom-file-upload">
                             Choose local file <DescriptionIcon />
                             <input type="file" onChange={handleVideoUpload} id="file-upload" />
+                        </label>
+                        <label for="sub-upload" class="custom-file-upload">
+                            Choose subtitle file <DescriptionIcon />
+                            <input type="file" onChange={handleSubUpload} id="sub-upload" />
                         </label>
 
                     </>

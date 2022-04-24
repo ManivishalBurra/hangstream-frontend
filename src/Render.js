@@ -7,30 +7,36 @@ import Room from './pages/Stream/Room'
 import Login from './pages/Login/Login'
 import Movies from './pages/Movies/movie'
 import Error from './pages/404/error'
-import Private from './pages/private/private';
+import Audio from './components/AudioCall/audio'
 import Drive from './pages/Drive/drive'
 import {UserRoom} from './userContext/userdetails'
 import {Theme} from './userContext/userdetails'
 import {filePathMovie} from './userContext/userdetails'
+import {filePathSub} from './userContext/userdetails'
 function Render() {
   const [roomId,setRoomId] = useState("");
   const [theme,setTheme]= useState("light-theme");
-  const [videoFilePath, setVideoFilePath] = useState(null);
+  const [videoFilePath, setVideoFilePath] = useState("");
+  const [subFilePath,setSubFilePath]=useState("");
   return (
     <Router>
      <UserRoom.Provider value={{roomId,setRoomId}}>
      <Theme.Provider value={{theme,setTheme}}>
      <filePathMovie.Provider value={{videoFilePath, setVideoFilePath}}>
+     <filePathSub.Provider value={{subFilePath,setSubFilePath}}>
       <Switch>
       <Route exact path="/home/:googleId" component={Home} />
       <Route path="/account" component={Account} />
       <Route  path="/room/:roomid" component={Room} />
-      <Route  path="/movies" component={Movies} />
-      <Route  path="/watch" component={Drive} />
-      <Route  path="/private" component={Private} />
+      <Route  path="/streamflix" component={Movies} />
+      <Route  path="/watch/:movieid" component={Drive} />
+      <Route  path="/audio" component={Audio} />
+      {/* <Route  path="/private" component={Private} /> */}
       <Route exact path="/" component={Login} />
       <Route  path="*" component={Error} />
+      
       </Switch>
+      </filePathSub.Provider>
       </filePathMovie.Provider>
       </Theme.Provider>
       </UserRoom.Provider>

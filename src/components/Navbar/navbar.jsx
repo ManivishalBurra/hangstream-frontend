@@ -100,7 +100,7 @@ const Navbar = () => {
                       </li>
 
                       <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
-                        <Link class="nav-link " to={"/movies"}>
+                        <Link class="nav-link " to={"/streamflix"}>
                           Streamflix
                         </Link>
                       </li>
@@ -163,7 +163,7 @@ const Navbar = () => {
                           placeholder="Search user or movie"
                           value={searchText}
                           onChange={DynamicSearch}
-                          onBlur={() => setSearchbar("searchbar-close")}
+                          onBlur={() => {setSearchbar("searchbar-close");SetSearchText("");setSearchResult([])}}
                           autoComplete="off"
                         />
                       </li>

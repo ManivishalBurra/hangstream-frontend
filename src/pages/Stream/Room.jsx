@@ -5,9 +5,11 @@ import "material-react-toastify/dist/ReactToastify.css";
 import Navbar from "../../components/Navbar/navbar";
 import io from "socket.io-client";
 import SendIcon from "@material-ui/icons/Send";
+import ChatIcon from "@material-ui/icons/Chat";
 import { UserRoom } from "../../userContext/userdetails";
 import { Theme } from "../../userContext/userdetails";
 import { filePathMovie } from "../../userContext/userdetails";
+import { filePathSub } from "../../userContext/userdetails";
 import { BASE_URL } from "../../constants/index";
 import ReactPlayer from "react-player";
 import Box from "../../components/Box/Box";
@@ -23,6 +25,7 @@ const Room = (props) => {
   var { theme, setTheme } = useContext(Theme);
   var { roomId, setRoomId } = useContext(UserRoom);
   const { videoFilePath, setVideoFilePath } = useContext(filePathMovie);
+  const { subFilePath, setSubFilePath } = useContext(filePathSub);
   const roomid = props.match.params.roomid;
   const tokenId = localStorage.getItem("tokenId");
   const [banner, setBanner] = useState({});
@@ -30,6 +33,7 @@ const Room = (props) => {
   var [typing, setTyping] = useState("");
   const [sentStatus, setSentStatus] = useState(false);
   const [play, setPlay] = useState(false);
+  const [chatOpen, setChatOpen] = useState("chat-area-close");
   var playTime = "";
   var localTime = "";
   const myvideo = useRef(null);
@@ -41,7 +45,7 @@ const Room = (props) => {
     setBoxState(false);
   }
 
-  useEffect(async () => {
+  useEffect(() => {
     socket = io.connect(BASE_URL);
     if (!tokenId) {
       setRoomId(roomid);
@@ -210,87 +214,128 @@ const Room = (props) => {
   return (
     <>
       <Navbar />
-      <div className="row chat-main" id={theme + "-main"}>
+      <div className="center chat-main" id={theme + "-main"}>
         <div className="col-lg-9 stream-area">
           <div className="video-main">
-            <ReactPlayer
-              width="100%"
-              height="100%"
-              ref={myvideo}
-              url={videoFilePath}
-              playing={play}
-              controls
-              progressInterval={4000}
-              onProgress={Progress}
-              onDuration={Duration}
-              onEnded={End}
-            />
+            {!videoFilePath.includes("drive.google.com") ? (
+              <ReactPlayer
+                width="100%"
+                height="100%"
+                ref={myvideo}
+                url={videoFilePath}
+                playing={play}
+                controls
+                progressInterval={4000}
+                onProgress={Progress}
+                onDuration={Duration}
+                onEnded={End}
+                config={{
+                  file: {
+                    tracks: [
+                      {
+                        kind: "subtitles",
+                        src: subFilePath,
+                        srcLang: "en",
+                        default: true,
+                      },
+                    ],
+                  },
+                }}
+              />
+            ) : (
+              <iframe
+                src={videoFilePath}
+                width="100%"
+                height="100%"
+                frameborder="0"
+                scrolling="no"
+                seamless=""
+                title={banner.movieName}
+                key={"iframeMovieName"}
+              />
+            )}
           </div>
         </div>
 
-        <div className="col-lg-3 chat-area" id={theme + "-chat"}>
-          <div className="chat-box column">
-            <div class="messages" id="msg">
-              {chat.map((chat, index) => {
-                return (
-                  <>
-                    {user === chat.user ? (
-                      <div className="chat-comb">
-                        <h6
-                          className="usermsg"
-                          style={{
-                            marginLeft: "auto",
-                            backgroundColor: "#ffc107",
-                          }}
-                          key={index}
-                        >
-                          {chat.message}
-                        </h6>
-                        <img src={chat.profilepic} className={theme + "-img"} />
-                      </div>
-                    ) : (
-                      <div className="chat-comb">
-                        <img src={chat.profilepic} />
-                        <h6 className="usermsg" key={index}>
-                          {chat.message}
-                        </h6>
-                      </div>
-                    )}
-                    <AlwaysScrollToBottom />
-                  </>
-                );
-              })}
-              <h6 className="typing">{typing}</h6>
-            </div>
+        <div className={chatOpen}>
+          <button
+            className={"chat-open" + " chat-open-corner" + chatOpen}
+            onClick={() => {
+              if (chatOpen === "chat-area") setChatOpen("chat-area-close");
+              else setChatOpen("chat-area");
+            }}
+          >
+            <ChatIcon />
+          </button>
+          {chatOpen && (
+            <div className="chat-box column" id={theme + "-chat"}>
+              <div class="messages" id="msg">
+                {chat.map((chat, index) => {
+                  return (
+                    <>
+                      {user === chat.user ? (
+                        <div className="chat-comb">
+                          <h6
+                            className="usermsg"
+                            style={{
+                              marginLeft: "auto",
+                              backgroundColor: "#ffc107",
+                            }}
+                            key={index}
+                          >
+                            {chat.message}
+                          </h6>
+                          <img
+                            src={chat.profilepic}
+                            className={theme + "-img"}
+                            alt=""
+                          />
+                        </div>
+                      ) : (
+                        <div className="chat-comb">
+                          <img src={chat.profilepic} alt="" />
+                          <h6 className="usermsg" key={index}>
+                            {chat.message}
+                          </h6>
+                        </div>
+                      )}
+                      <AlwaysScrollToBottom />
+                    </>
+                  );
+                })}
+                <h6 className="typing">{typing}</h6>
+              </div>
 
-            <div className="messagebox center">
-              <form autocomplete="off" onSubmit={sendMessage}>
-                <input
-                  autoComplete="off"
-                  name="message"
-                  value={message}
-                  onChange={TypeMessage}
-                  placeholder="Send a message"
-                />
-                <button type="submit">
-                  <SendIcon />
-                </button>
-              </form>
+              <div className="messagebox center">
+                <form autocomplete="off" onSubmit={sendMessage}>
+                  <input
+                    autoComplete="off"
+                    name="message"
+                    value={message}
+                    onChange={TypeMessage}
+                    placeholder="Send a message"
+                  />
+                  <button type="submit">
+                    <SendIcon />
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
+          )}
+
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+          {boxState && <Box display={display} filePath={true} />}
         </div>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        {boxState && <Box display={display} filePath={true} />}
       </div>
     </>
   );
