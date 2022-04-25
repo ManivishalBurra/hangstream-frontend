@@ -1,4 +1,3 @@
-   
 import { useState } from "react";
 import { useClient } from "./settings";
 import { Grid, Button } from "@material-ui/core";
@@ -6,7 +5,7 @@ import MicIcon from "@material-ui/icons/Mic";
 import MicOffIcon from "@material-ui/icons/MicOff";
 import VideocamIcon from "@material-ui/icons/Videocam";
 import VideocamOffIcon from "@material-ui/icons/VideocamOff";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import CallEndIcon from '@material-ui/icons/CallEnd';
 
 export default function Controls(props) {
   const client = useClient();
@@ -37,11 +36,12 @@ export default function Controls(props) {
   };
 
   return (
-    <Grid container spacing={2} alignItems="center">
-      <Grid item>
+    <Grid container spacing={2} alignItems="center" style={{padding:"10px"}}>
+      <Grid 
+      item>
         <Button
           variant="contained"
-          color={trackState.audio ? "primary" : "secondary"}
+          color={trackState.audio ? "grey" : "secondary"}
           onClick={() => mute("audio")}
         >
           {trackState.audio ? <MicIcon /> : <MicOffIcon />}
@@ -50,7 +50,7 @@ export default function Controls(props) {
       <Grid item>
         <Button
           variant="contained"
-          color={trackState.video ? "primary" : "secondary"}
+          color={trackState.video ? "grey" : "secondary"}
           onClick={() => mute("video")}
         >
           {trackState.video ? <VideocamIcon /> : <VideocamOffIcon />}
@@ -59,11 +59,10 @@ export default function Controls(props) {
       <Grid item>
         <Button
           variant="contained"
-          color="default"
+          style={{color:"red"}}
           onClick={() => leaveChannel()}
         >
-          Leave
-          <ExitToAppIcon />
+          <CallEndIcon />
         </Button>
       </Grid>
     </Grid>

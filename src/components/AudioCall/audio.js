@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { Button } from "@material-ui/core";
 import VideoCall from "./VideoCall";
 
-const Audio = (props) => {
+const AudioComp = (props) => {
     const [inCall,setInCall] = useState(false);
     return (
         <div className="App" style={{ height: "100%" }}>
@@ -22,4 +22,4 @@ const Audio = (props) => {
 
 };
 
-export default Audio;
+export default AudioComp;

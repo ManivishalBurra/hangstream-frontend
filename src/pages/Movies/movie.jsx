@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import ReactPlayer from 'react-player'
-import streamcam from "../../images/streamcam.png";
 import Info from '../../components/EpInfo/epinfo'
 import Navbar from '../../components/Navbar/navbar'
 import {filePathMovie} from '../../userContext/userdetails'
@@ -22,19 +21,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 const Private = () => {
   const [movies, setMovies] = useState([]);
-  const [clay,setClay] = useState(false);
   const myvideo = useRef(null);
   var { theme,setTheme } = useContext(Theme); 
   var { roomId, setRoomId } = useContext(UserRoom);
-  const [buttonStatus, setButtonStatus] = useState(false);
   const [boxState, setBoxState] = useState(false);
   const {videoFilePath, setVideoFilePath} = useContext(filePathMovie);
   const history = useHistory();
-  const [banner, setBanner] = useState({});
-  const tokenId = localStorage.getItem("tokenId");
   const [privateStatus,setPrivateStatus] = useState(false);
   const [ind,setInd] = useState(-1);
-  var arr=[];
+  
   useEffect(() => {
    axios.get(`${BASE_URL}/movies/movieslist`).then(async (res) => {
 

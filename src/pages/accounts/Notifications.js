@@ -1,13 +1,10 @@
-import React, { useState, useContext, useEffect } from "react";
-import { UserRoom } from "../../userContext/userdetails";
+import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../constants/index";
-import { Theme } from "../../userContext/userdetails";
 import "../../css/account.css";
 import NotificationShow from "../../components/ContenLoader/Notificationloader";
 import axios from "axios";
 import "../../css/notifications.css";
 const Notification = (props) => {
-  const tokenId = localStorage.getItem("tokenId");
   const [requests, setRequests] = useState([]);
   useEffect(() => {
     axios
