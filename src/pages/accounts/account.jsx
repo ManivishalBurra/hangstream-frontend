@@ -1,23 +1,17 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import {useHistory } from "react-router-dom";
 import Navbar from "../../components/Navbar/navbar";
-import { UserRoom } from "../../userContext/userdetails";
 import { BASE_URL } from "../../constants/index";
-import { Theme } from "../../userContext/userdetails";
 import PersonIcon from "@material-ui/icons/Person";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import { PieChart } from "react-minimal-pie-chart";
 import "../../css/account.css";
 import axios from "axios";
 import Profile from "./Profile";
 import Notification from "./Notifications";
 const Account = (props) => {
   const history = useHistory();
-  var { roomId, setRoomId } = useContext(UserRoom);
-  var { theme, setTheme } = useContext(Theme);
-  const [boxState, setBoxState] = useState(false);
   const [friends, setFriends] = useState(0);
   const tokenId = localStorage.getItem("tokenId");
   const [user, setUser] = useState({});
@@ -86,7 +80,7 @@ const Account = (props) => {
                 </tbody>
               </table>
             </div>
-            {clicked == "Profile" && (
+            {clicked === "Profile" && (
               <Profile
                 name={user.username}
                 email={user.email}
@@ -94,7 +88,7 @@ const Account = (props) => {
                 profilepic={user.profilepic}
               />
             )}
-            {clicked == "Notifications" && (
+            {clicked === "Notifications" && (
               <Notification useremail={user.email} />
             )}
           </div>

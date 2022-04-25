@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useHistory } from "react-router-dom";
+import { Menu, Dropdown, Button } from "antd";
+import "antd/dist/antd.css";
 import { ToastContainer, toast } from "material-react-toastify";
 import "material-react-toastify/dist/ReactToastify.css";
 import Navbar from "../../components/Navbar/navbar";
@@ -17,6 +19,8 @@ import "../../css/room.css";
 import axios from "axios";
 import receive from "../../sounds/receive.mp3";
 import send from "../../sounds/sentmessage.mp3";
+import { UpCircleOutlined,WechatOutlined,VideoCameraOutlined } from '@ant-design/icons';
+import AudioComp from "../../components/AudioCall/audio"
 const duration = require("pendel");
 let socket;
 
@@ -34,6 +38,7 @@ const Room = (props) => {
   const [sentStatus, setSentStatus] = useState(false);
   const [play, setPlay] = useState(false);
   const [chatOpen, setChatOpen] = useState("chat-area-close");
+  const [showChat,setShowChat] = useState(true)
   var playTime = "";
   var localTime = "";
   const myvideo = useRef(null);
@@ -107,10 +112,10 @@ const Room = (props) => {
   useEffect(() => {
     socket.on("message", (payload) => {
       if (payload.user === tokenId) {
-        var msg = new Audio(send);
+        let msg = new Audio(send);
         msg.play();
       } else {
-        var msg = new Audio(receive);
+        let msg = new Audio(receive);
         msg.play();
       }
 
@@ -268,8 +273,8 @@ const Room = (props) => {
             <ChatIcon />
           </button>
           {chatOpen && (
-            <div className="chat-box column" id={theme + "-chat"}>
-              <div class="messages" id="msg">
+            <div className={"chat-box column "+(!showChat&&"center")} id={theme + "-chat"}>
+              {showChat?<div class="messages" id="msg">
                 {chat.map((chat, index) => {
                   return (
                     <>
@@ -304,7 +309,7 @@ const Room = (props) => {
                   );
                 })}
                 <h6 className="typing">{typing}</h6>
-              </div>
+              </div>:<AudioComp/>}
 
               <div className="messagebox center">
                 <form autocomplete="off" onSubmit={sendMessage}>
@@ -315,6 +320,37 @@ const Room = (props) => {
                     onChange={TypeMessage}
                     placeholder="Send a message"
                   />
+                  <div className="center">
+                  <Dropdown
+                    overlay={
+                      <Menu
+                        items={[
+                          {
+                            label: (
+                              <a onClick={()=>setShowChat(true)}>
+                              <WechatOutlined />
+                              {" "}chat
+                              </a>
+                              
+                            ),
+                          },
+                          {
+                            label: (
+                              <a onClick={()=>setShowChat(false)}>
+                                <VideoCameraOutlined />
+                                {" "}video call
+                              </a>
+                            ),
+                          },
+                        ]}
+                      />
+                    }
+                    placement="top"
+                    arrow={{ pointAtCenter: true }}
+                  >
+                    <UpCircleOutlined />
+                  </Dropdown>
+                  </div>
                   <button type="submit">
                     <SendIcon />
                   </button>

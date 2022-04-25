@@ -1,4 +1,4 @@
-import React,{useEffect,useContext} from 'react';
+import React,{useEffect} from 'react';
 import GoogleLogin from "react-google-login";
 import {useHistory} from "react-router-dom";
 import { ToastContainer, toast } from "material-react-toastify";
