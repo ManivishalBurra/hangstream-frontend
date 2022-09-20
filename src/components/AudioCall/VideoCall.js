@@ -1,5 +1,3 @@
-
-   
 import { useState, useEffect } from "react";
 import {
   config,
@@ -8,8 +6,8 @@ import {
   channelName,
 } from "./Settings.js";
 import { Grid } from "@material-ui/core";
-import Video from "./Video";
-import Controls from "./Controls";
+import Video from "./video";
+import Controls from "./controls";
 
 export default function VideoCall(props) {
   const { setInCall } = props;
@@ -70,13 +68,13 @@ export default function VideoCall(props) {
 
   return (
     <Grid container direction="column" style={{ height: "100%" }}>
-      <Grid item style={{ height: "5%" }}>
+    <Grid item style={{ height: "90%" }}>
+      {start && tracks && <Video tracks={tracks} users={users} />}
+    </Grid>
+      <Grid item style={{ height: "10%" }}>
         {ready && tracks && (
           <Controls tracks={tracks} setStart={setStart} setInCall={setInCall} />
         )}
-      </Grid>
-      <Grid item style={{ height: "95%" }}>
-        {start && tracks && <Video tracks={tracks} users={users} />}
       </Grid>
     </Grid>
   );

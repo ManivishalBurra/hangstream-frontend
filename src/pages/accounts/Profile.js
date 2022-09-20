@@ -1,12 +1,7 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
-import Navbar from "../../components/Navbar/navbar";
-import { UserRoom } from "../../userContext/userdetails";
-import { BASE_URL } from "../../constants/index";
-import { Theme } from "../../userContext/userdetails";
+import React from "react";
+import { Link } from "react-router-dom";
 import { PieChart } from "react-minimal-pie-chart";
 import "../../css/account.css";
-import axios from "axios";
 import ProfileShow from "../../components/ContenLoader/profileloader";
 const Profile = (props) => {
   return (
@@ -48,7 +43,7 @@ const Profile = (props) => {
           </div>
           <div className="col-lg-6">
             <div className="account-box center column">
-              <img src={props.profilepic} />
+              <img src={props.profilepic} alt="profile pic"/>
               <table class="table">
                 <tbody>
                   <tr>
