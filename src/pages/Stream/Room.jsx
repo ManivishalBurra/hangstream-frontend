@@ -20,7 +20,7 @@ import axios from "axios";
 import receive from "../../sounds/receive.mp3";
 import send from "../../sounds/sentmessage.mp3";
 import { UpCircleOutlined,WechatOutlined,VideoCameraOutlined } from '@ant-design/icons';
-import AudioComp from "../../components/AudioCall/audio"
+import AudioComp from "../../components/AudioCall/Audio"
 const duration = require("pendel");
 let socket;
 
