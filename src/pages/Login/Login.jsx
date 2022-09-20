@@ -45,7 +45,7 @@ const Login = ()=>{
             <h4>Hangstream</h4>
             <GoogleLogin
             clientId="857139218088-qhn8a18fashrmakebvo4u0fi25uooqg1.apps.googleusercontent.com"
-            buttonText="Login to let fun begin"
+            buttonText="Login to let fun begin and end as well"
             onSuccess={responseSuccessGoogle}
             onFailure={responseErrorGoogle}
             cookiePolicy={"single_host_origin"}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useClient } from "./settings";
+import { useClient } from "./Settings";
 import { Grid, Button } from "@material-ui/core";
 import MicIcon from "@material-ui/icons/Mic";
 import MicOffIcon from "@material-ui/icons/MicOff";
