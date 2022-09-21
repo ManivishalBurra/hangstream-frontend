@@ -12,7 +12,7 @@ body{
 }
 #light-theme-main{
     background-color: rgb(233, 233, 233);
-    overflow: scroll;
+    overflow-y: scroll;
 }
 #dark-theme-main{
     background-color: rgb(35 35 35);

@@ -220,7 +220,7 @@ const Room = (props) => {
     <>
       <Navbar />
       <div className="center chat-main" id={theme + "-main"}>
-        <div className="col-lg-9 stream-area">
+        <div className="col-lg-9 stream-area center">
           <div className="video-main">
             {!videoFilePath.includes("drive.google.com") ? (
               <ReactPlayer
@@ -262,7 +262,7 @@ const Room = (props) => {
           </div>
         </div>
 
-        <div className={chatOpen}>
+        <div className={chatOpen+ " center"}>
           <button
             className={"chat-open" + " chat-open-corner" + chatOpen}
             onClick={() => {

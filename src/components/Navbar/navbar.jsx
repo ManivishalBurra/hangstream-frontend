@@ -41,7 +41,7 @@ const Navbar = () => {
     history.push("/");
   }
   const [darkStatus, setDarkStatus] = useState(false);
-  function Themer() {
+  const Themer = ()=> {
     if (!darkStatus) {
       setTheme("dark-theme");
     } else {
