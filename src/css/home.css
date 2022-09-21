@@ -16,7 +16,6 @@ body{
 }
 #dark-theme-main{
     background-color: rgb(35 35 35);
-    overflow: scroll;
 }
 #dark-theme-blur{
     background-color: rgb(53 50 50 / 75%);
