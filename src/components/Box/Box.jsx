@@ -240,11 +240,11 @@ const Box = (props) => {
                 {exist && <h6>Already exists in our DB,add an episode if you want to...</h6>}
                 {props.filePath ?
                     <>
-                        <label for="file-upload" class="custom-file-upload">
+                        <label for="file-upload" className="custom-file-upload">
                             Choose local file <DescriptionIcon />
                             <input type="file" onChange={handleVideoUpload} id="file-upload" />
                         </label>
-                        <label for="sub-upload" class="custom-file-upload">
+                        <label for="sub-upload" className="custom-file-upload">
                             Choose subtitle file <DescriptionIcon />
                             <input type="file" onChange={handleSubUpload} id="sub-upload" />
                         </label>

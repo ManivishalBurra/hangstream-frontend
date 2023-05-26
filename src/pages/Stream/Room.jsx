@@ -2,17 +2,16 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Menu, Dropdown, Button } from "antd";
 import "antd/dist/antd.css";
-import { ToastContainer, toast } from "material-react-toastify";
+import { toast } from "material-react-toastify";
 import "material-react-toastify/dist/ReactToastify.css";
-import Navbar from "../../components/Navbar/navbar";
-import io from "socket.io-client";
+import Navbar from "../../components/Navbar/Navbar";
 import SendIcon from "@material-ui/icons/Send";
 import ChatIcon from "@material-ui/icons/Chat";
 import { UserRoom } from "../../userContext/userdetails";
 import { Theme } from "../../userContext/userdetails";
 import { filePathMovie } from "../../userContext/userdetails";
 import { filePathSub } from "../../userContext/userdetails";
-import { BASE_URL } from "../../constants/index";
+import { BASE_URL, SOCKET_URL } from "../../constants/index";
 import ReactPlayer from "react-player";
 import Box from "../../components/Box/Box";
 import "../../css/room.css";
@@ -22,7 +21,6 @@ import send from "../../sounds/sentmessage.mp3";
 import { UpCircleOutlined,WechatOutlined,VideoCameraOutlined } from '@ant-design/icons';
 import AudioComp from "../../components/AudioCall/Audio"
 const duration = require("pendel");
-let socket;
 
 const Room = (props) => {
   const history = useHistory();
@@ -35,23 +33,18 @@ const Room = (props) => {
   const [banner, setBanner] = useState({});
   const [userData, setUserData] = useState({});
   var [typing, setTyping] = useState("");
-  const [sentStatus, setSentStatus] = useState(false);
   const [play, setPlay] = useState(false);
   const [chatOpen, setChatOpen] = useState("chat-area-close");
   const [showChat,setShowChat] = useState(true)
+  const [boxState, setBoxState] = useState(false);
   var playTime = "";
   var localTime = "";
   const myvideo = useRef(null);
   var user = localStorage.getItem("tokenId");
-  var x = "";
-  const [boxState, setBoxState] = useState(false);
-
-  function display(state) {
-    setBoxState(false);
-  }
+  const webSocketRef = useRef(null);
+  var x;
 
   useEffect(() => {
-    socket = io.connect(BASE_URL);
     if (!tokenId) {
       setRoomId(roomid);
       history.push("/");
@@ -70,8 +63,6 @@ const Room = (props) => {
             });
             setUserData({ ...resp.data[0] });
             x = { ...resp.data[0] };
-            var userName = x.username;
-            socket.emit("join_room", { userName, roomId });
             if (res.data[0].movieUrl === "") {
               setBoxState(true);
             }
@@ -82,35 +73,70 @@ const Room = (props) => {
     }
   }, [BASE_URL]);
 
-  const [message, setMessage] = useState("");
-  const [chat, setChat] = useState([]);
-
-  useEffect(() => {
-    socket.on("welcome", (payload) => {
-      if (payload === x.username) {
-        toast.dark(`${payload}, welcome to the Hangstream`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      } else {
-        toast.warn(`${payload} has joined the room`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+  useEffect(()=>{
+    const URL = `ws://${SOCKET_URL}/ws/${roomid}/${tokenId}`;
+    webSocketRef.current = new WebSocket(URL);
+    const currentPageEndPoint = window.location.pathname;
+    if(!currentPageEndPoint.includes("/room/")){
+      return
+    }
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = '';
+      if (webSocketRef.current) {
+        webSocketRef.current.close();
+        history.push("/")
       }
-    });
-  }, []);
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    // WebSocket event handlers
+    webSocketRef.current.onopen = () => {
+      console.log('WebSocket connection established');
+      axios.post(`${BASE_URL}/home/getinfo`, {
+        id: tokenId,
+      }).then(resp => {
+        SendToSockets({data: resp.data[0].username, room: roomid, user: tokenId, profilepic: "", type: "join"})
+      })
+      
+    };
 
-  useEffect(() => {
-    socket.on("message", (payload) => {
+    webSocketRef.current.onclose = () => {
+      console.log('WebSocket connection closed');
+      axios.post(`${BASE_URL}/home/getinfo`, {
+        id: tokenId,
+      }).then(resp => {
+        SendToSockets({data: resp.data[0].username, room: roomid, user: tokenId, profilepic: "", type: "leave"})
+      })
+    };
+
+    webSocketRef.current.onmessage = (m) => {
+      const payload = JSON.parse(m.data);
+      switch (payload.type) {
+        case "chat":
+          InsertReceivedMessage(payload)
+          break
+        case "info":
+          CreateTypingEvent(payload)
+          break
+        case "timing":
+          SyncPlayTrack(payload)
+          break
+        case "join":
+          WelcomeUser(payload)
+          break
+        case "leave":
+          GreetUser(payload)
+          break
+      }
+    return () => {
+        if (webSocketRef.current) {
+          webSocketRef.current.close();
+        }
+    };
+  };
+  },[SOCKET_URL])
+
+  const InsertReceivedMessage = (payload) => {
       if (payload.user === tokenId) {
         let msg = new Audio(send);
         msg.play();
@@ -118,26 +144,31 @@ const Room = (props) => {
         let msg = new Audio(receive);
         msg.play();
       }
-
       setChat((chat) => [...chat, payload]);
       setTyping("");
-    });
-  }, []);
+  }
 
-  useEffect(() => {
-    socket.on("timing", (payload) => {
-      if (user !== payload.ID) {
+  const CreateTypingEvent = (payload) => {
+    if (payload.user !== tokenId) {
+      setTyping(payload.data);
+      setTimeout(function () {
+        setTyping("");
+      }, 3000);
+    }
+  }
+
+  const SyncPlayTrack = (payload) => {
+    //todo: implement to sync up with international calls as well
+    if (user !== payload.user && myvideo.current) {
         playTime = myvideo.current.getCurrentTime();
         var d = new Date();
         localTime = d.toLocaleTimeString();
-        var differenceInTime = duration.time(localTime, payload.localTime);
+        var differenceInTime = duration.time(localTime, payload.data.localTime);
         var syncDifference =
           Number(differenceInTime.minutes) * 60 +
           Number(differenceInTime.seconds);
-        var streamerPlayTime = Number(payload.playTime) + syncDifference;
-        console.log(payload.movie);
-        console.log(Math.abs(streamerPlayTime - playTime));
-        if (payload.movie !== "" && Math.abs(streamerPlayTime - playTime) > 1) {
+        var streamerPlayTime = Number(payload.data.playTime) + syncDifference;
+        if (payload.data.movie !== "" && Math.abs(streamerPlayTime - playTime) > 1) {
           //for online
           myvideo.current.seekTo(streamerPlayTime, "seconds");
           setPlay(true);
@@ -145,38 +176,78 @@ const Room = (props) => {
           //for offline
           myvideo.current.seekTo(streamerPlayTime, "seconds");
         }
-      }
-    });
-  }, []);
+    }
+  }
+
+  const WelcomeUser = (payload)=>{
+    if (payload.user === tokenId) {
+      toast.dark(`${payload.data}, welcome to the Hangstream`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: {backgroundColor:"#ffc107"}
+      });
+    } else {
+      toast.dark(`${payload.data} has joined the room`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  }
+
+  const GreetUser = (payload)=>{
+    if (payload.user === tokenId) {
+      toast.dark(`Hey ${payload.data}, you left the room`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } else {
+      toast.warn(`${payload.data} has left the room`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  }
+
+  const SendToSockets = (obj) => {
+    if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+      const request = JSON.stringify(obj);
+      webSocketRef.current.send(request)
+    }
+  }
+
+  function display(state) {
+    setBoxState(false);
+  }
+
+  const [message, setMessage] = useState("");
+  const [chat, setChat] = useState([]);
 
   function TypeMessage(e) {
     setMessage(e.target.value);
-    var name = userData.username;
-
-    if (message.length === 1) {
-      setTyping("");
-      setSentStatus(false);
-    } else if (!sentStatus) {
-      socket.emit("typing", { name, user, roomId });
-      setSentStatus(true);
-    }
+    var name = (userData.username && userData.username.length > 0) ? userData.username : "Friend";
+    SendToSockets({data:name+" is typing", room: roomid, user: tokenId, profilepic: "", type: "info"})
   }
-  useEffect(() => {
-    socket.on("typing", (payload) => {
-      if (payload.user !== tokenId) {
-        var str = payload.name.toLowerCase().split(" ");
-        setTyping(str[0] + " is typing...");
-        setTimeout(function () {
-          setTyping("");
-        }, 3000);
-      }
-    });
-  }, []);
 
   const sendMessage = (e) => {
     e.preventDefault();
     var profilepic = userData.profilepic;
-    socket.emit("message", { message, user, roomId, profilepic });
+    SendToSockets({data:message, room: roomid, user: tokenId, profilepic: profilepic, type: "chat"})
     setMessage("");
     setTyping("");
   };
@@ -195,7 +266,8 @@ const Room = (props) => {
     var movie = banner.movieName;
     console.log({ playTime, roomId, localTime, ID, movie });
     if (tokenId === banner.id) {
-      socket.emit("timing", { playTime, roomId, localTime, ID, movie });
+      SendToSockets({data: { playTime, localTime, movie } , room: roomid, user: tokenId, profilepic: "", type: "timing"})
+
     }
   }
 
@@ -274,37 +346,38 @@ const Room = (props) => {
           </button>
           {chatOpen && (
             <div className={"chat-box column "+(!showChat&&"center")} id={theme + "-chat"}>
-              {showChat?<div class="messages" id="msg">
+              {showChat?<div className="messages" id="msg">
                 {chat.map((chat, index) => {
                   return (
                     <>
                       {user === chat.user ? (
-                        <div className="chat-comb">
+                        <div className="chat-comb" key={chat.user+index+"chat-comb"}>
                           <h6
                             className="usermsg"
                             style={{
                               marginLeft: "auto",
                               backgroundColor: "#ffc107",
                             }}
-                            key={index}
+                            key={index+user+"usermsg"}
                           >
-                            {chat.message}
+                            {chat.data}
                           </h6>
                           <img
                             src={chat.profilepic}
                             className={theme + "-img"}
                             alt=""
+                            key={chat.data+"img"+index}
                           />
                         </div>
                       ) : (
-                        <div className="chat-comb">
-                          <img src={chat.profilepic} alt="" />
-                          <h6 className="usermsg" key={index}>
-                            {chat.message}
+                        <div className="chat-comb" key={chat.user+"chat-comb"+index}>
+                          <img src={chat.profilepic} alt="" key={chat.user+"img"+index}/>
+                          <h6 className="usermsg" key={chat.user+"usermsg"+index}>
+                            {chat.data}
                           </h6>
                         </div>
                       )}
-                      <AlwaysScrollToBottom />
+                      <AlwaysScrollToBottom key={index}/>
                     </>
                   );
                 })}
@@ -312,7 +385,7 @@ const Room = (props) => {
               </div>:<AudioComp/>}
 
               <div className="messagebox center">
-                <form autocomplete="off" onSubmit={sendMessage}>
+                <form autoComplete="off" onSubmit={sendMessage}>
                   <input
                     autoComplete="off"
                     name="message"
@@ -358,18 +431,6 @@ const Room = (props) => {
               </div>
             </div>
           )}
-
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
           {boxState && <Box display={display} filePath={true} />}
         </div>
       </div>

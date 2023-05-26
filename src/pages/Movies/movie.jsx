@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useHistory } from "react-router-dom";
 import ReactPlayer from 'react-player'
 import Info from '../../components/EpInfo/epinfo'
-import Navbar from '../../components/Navbar/navbar'
+import Navbar from '../../components/Navbar/Navbar'
 import {filePathMovie} from '../../userContext/userdetails'
 import Tippy from '@tippyjs/react';
 import Box from '../../components/Box/Box'

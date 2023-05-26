@@ -6,7 +6,7 @@ import GroupIcon from "@material-ui/icons/Group";
 import VideocamIcon from "@material-ui/icons/Videocam";
 import streamcam from "../../images/streamcam.png";
 import active from "../../images/active.png";
-import Navbar from "../../components/Navbar/navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import Box from "../../components/Box/Box";
 import { UserRoom } from "../../userContext/userdetails";
 import { BASE_URL } from "../../constants/index";
@@ -73,6 +73,7 @@ const Home = (props) => {
       })
       .then((res) => {
         if (res.data) {
+          setRoomId(banner.roomId);
           history.push(`/room/${banner.roomId}`);
         }
       });
@@ -121,7 +122,7 @@ const Home = (props) => {
         </div>
         <div className="col-lg-4">
           <div className="friends-list backdrop-blur" id={theme + "-blur"}>
-            <table class="table">
+            <table className="table">
               <thead>
                 <tr>
                   <th>Your friendlist</th>
@@ -133,7 +134,7 @@ const Home = (props) => {
                     return (
                       <tr key={index}>
                         <td>
-                          <i class="far fa-user-circle"></i>
+                          <i className="far fa-user-circle"></i>
                           {friends}
                         </td>
                         <td>

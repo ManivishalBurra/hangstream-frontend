@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {useHistory } from "react-router-dom";
-import Navbar from "../../components/Navbar/navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import { BASE_URL } from "../../constants/index";
 import PersonIcon from "@material-ui/icons/Person";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
@@ -46,7 +46,7 @@ const Account = (props) => {
           </div>
           <div className="content-main">
             <div className="account-content">
-              <table class="table">
+              <table className="table">
                 <tbody>
                   <tr>
                     <td

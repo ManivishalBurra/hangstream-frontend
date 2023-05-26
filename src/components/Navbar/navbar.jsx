@@ -10,6 +10,7 @@ import { Theme } from "../../userContext/userdetails";
 import SearchResult from "./searchresult";
 import axios from "axios";
 import { BASE_URL } from "../../constants/index";
+import { ToastContainer, toast } from "material-react-toastify";
 
 const Navbar = () => {
   const history = useHistory();
@@ -67,17 +68,17 @@ const Navbar = () => {
           className="navigation-wrap start-header start-style center"
           id={theme}
         >
-          <div class="nav-container">
-            <div class="row">
-              <div class="col-12">
-                <nav class="navbar navbar-expand-md navbar-light">
-                  <Link class="navbar-brand center" to={"/home/" + userid}>
+          <div className="nav-container">
+            <div className="row">
+              <div className="col-12">
+                <nav className="navbar navbar-expand-md navbar-light">
+                  <Link className="navbar-brand center" to={"/home/" + userid}>
                     <img src={logo} alt="" />
                     &nbsp;Hangstream
                   </Link>
 
                   <button
-                    class="navbar-toggler"
+                    className="navbar-toggler"
                     type="button"
                     data-toggle="collapse"
                     data-target="#navbarSupportedContent"
@@ -85,29 +86,29 @@ const Navbar = () => {
                     aria-expanded="false"
                     aria-label="Toggle navigation"
                   >
-                    <span class="navbar-toggler-icon"></span>
+                    <span className="navbar-toggler-icon"></span>
                   </button>
 
                   <div
-                    class="collapse navbar-collapse"
+                    className="collapse navbar-collapse"
                     id="navbarSupportedContent"
                   >
-                    <ul class="navbar-nav ml-auto py-4 py-md-0">
-                      <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
-                        <Link class="nav-link " to={"/home/" + userid}>
+                    <ul className="navbar-nav ml-auto py-4 py-md-0">
+                      <li className="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                        <Link className="nav-link " to={"/home/" + userid}>
                           Home
                         </Link>
                       </li>
 
-                      <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
-                        <Link class="nav-link " to={"/streamflix"}>
+                      <li className="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                        <Link className="nav-link " to={"/streamflix"}>
                           Streamflix
                         </Link>
                       </li>
 
-                      <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4 ">
+                      <li className="nav-item pl-4 pl-md-0 ml-0 ml-md-4 ">
                         <a
-                          class="nav-link dropdown-toggle"
+                          className="nav-link dropdown-toggle"
                           data-toggle="dropdown"
                           href="#"
                           role="button"
@@ -117,17 +118,17 @@ const Navbar = () => {
                           Account
                           <AccountCircleOutlinedIcon />
                         </a>
-                        <div class="dropdown-menu" id={theme + "-dropdown"}>
-                          <a class="dropdown-item" onClick={Logout}>
+                        <div className="dropdown-menu" id={theme + "-dropdown"}>
+                          <a className="dropdown-item" onClick={Logout}>
                             Logout
                           </a>
-                          <Link class="dropdown-item" to={"/account"}>
+                          <Link className="dropdown-item" to={"/account"}>
                             My account
                           </Link>
                         </div>
                       </li>
-                      <li class="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
-                        <Link class="nav-link " onClick={Themer}>
+                      <li className="nav-item pl-4 pl-md-0 ml-0 ml-md-4">
+                        <a className="nav-link " onClick={Themer}>
                           {darkStatus ? (
                             <Brightness2Icon
                               style={{
@@ -139,11 +140,11 @@ const Navbar = () => {
                           ) : (
                             <WbSunnyIcon className="theme-choice" />
                           )}
-                        </Link>
+                        </a>
                       </li>
-                      <li class=" pl-4 pl-md-0 ml-0 ml-md-4">
-                        <Link
-                          class="nav-link "
+                      <li className=" pl-4 pl-md-0 ml-0 ml-md-4">
+                        <a
+                          className="nav-link "
                           onClick={() => setSearchbar("searchbar-expand")}
                         >
                           {darkStatus ? (
@@ -156,7 +157,7 @@ const Navbar = () => {
                           ) : (
                             <SearchIcon className="theme-choice" />
                           )}
-                        </Link>
+                        </a>
                         <input
                           className={searchbar + " " + theme + "-search"}
                           name="episode"
@@ -179,6 +180,17 @@ const Navbar = () => {
       {searchResult.length > 0 && searchText.length > 0 && (
         <SearchResult result={searchResult} />
       )}
+      <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
     </>
   );
 };

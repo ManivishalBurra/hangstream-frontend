@@ -44,7 +44,7 @@ const Profile = (props) => {
           <div className="col-lg-6">
             <div className="account-box center column">
               <img src={props.profilepic} alt="profile pic"/>
-              <table class="table">
+              <table className="table">
                 <tbody>
                   <tr>
                     <td>Name: {props.name}</td>
