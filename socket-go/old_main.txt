@@ -1,0 +1,110 @@
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+	"socketHangstream.com/models"
+)
+
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+        return true
+    },
+}
+
+var house models.House
+
+func SocketHandler(c *gin.Context) {
+	roomId 	:= c.Param("roomId")
+	userId	:= c.Param("userId")
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+    if err != nil {
+        log.Print("Error during connection upgradation:", err)
+        return
+    }
+
+    defer conn.Close()
+ 
+    // First create a user without any knowledge of the user existence
+    user := models.Users {
+		UserId: userId,
+		RoomId: roomId,
+		Conn:	conn,
+	}
+	// Assume that the room is not exists and loop through rooms in house and if we find the room that means
+	// user should either need to enter the room or he's already in the room and trying to join again so we need to update conn.
+	roomExists := false
+	var room models.Room
+
+	for _, val := range house.Rooms {
+		//if room exists then we create a new user or update the user's conn
+		if val.RoomId == roomId {
+			roomExists = true
+			CreateOrUpdateUser(&val, user, conn)
+			break
+		}
+	}
+	// if room does not exist, then we create a new room and insert into house.
+	if !roomExists{
+		room.RoomId = roomId
+		room.User = append(room.User, user)
+		house.Rooms = append(house.Rooms, room)
+	}
+
+	for {
+		messageType, message, err := conn.ReadMessage()
+        if err != nil {
+            log.Println("Error during message reading:", err)
+            break
+        }
+        log.Printf("Received: %s", message)
+		// var ReceiveRoom models.Room
+		// for _, r := range house.Rooms {
+		// 	if r.RoomId == roomId {
+		// 		ReceiveRoom = r
+		// 		break
+		// 	}
+		// }
+
+		// for _, user := range ReceiveRoom.User{
+		// 	if user.UserId != userId {
+		// 		err = user.Conn.WriteMessage(messageType, message)
+		// 		if err != nil {
+		// 			log.Println("Error during message writing:", err)
+		// 		}
+		// 	}
+		// }
+		err = conn.WriteMessage(messageType, message)
+		
+		if err != nil {
+			log.Println("Error during message writing:", err)
+		}
+	}
+}
+
+func CreateOrUpdateUser(val *models.Room, user models.Users, conn *websocket.Conn) {
+	userExists := false
+	for _, u := range val.User {
+		if u.UserId == user.UserId {
+			u.Conn = conn
+			userExists = true
+			break
+		}
+	}
+	if !userExists {
+		val.RoomId = user.RoomId
+		val.User = append(val.User, user)
+	}
+}
+
+func main() {
+	r := gin.Default()
+	r.GET("/ws/:roomId/:userId", SocketHandler)
+	err := r.Run(":6303")
+	if err!=nil {
+		panic("[ERROR] failed to connect to server: " + err.Error())
+	}
+}
