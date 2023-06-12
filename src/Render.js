@@ -8,6 +8,7 @@ import Login from './pages/Login/Login'
 import Movies from './pages/Movies/movie'
 import Error from './pages/404/error'
 import Audio from './components/AudioCall/Audio'
+import Test from './pages/TestPage/Test'
 import Drive from './pages/Drive/drive'
 import {UserRoom} from './userContext/userdetails'
 import {Theme} from './userContext/userdetails'
@@ -32,6 +33,7 @@ function Render() {
       <Route  path="/watch/:movieid" component={Drive} />
       <Route  path="/audio" component={Audio} />
       {/* <Route  path="/private" component={Private} /> */}
+      <Route exact path="/test" component={Test} />
       <Route exact path="/" component={Login} />
       <Route  path="*" component={Error} />
       
