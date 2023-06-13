@@ -13,19 +13,18 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-
 type Message struct {
-	Data		interface{}	`json:"data"`
-	Room 		string		`json:"room"`
-	User 		string		`json:"user"`
-	ProfilePic 	string 		`json:"profilepic"`
-	Type		string		`json:"type"`
+	Data       interface{} `json:"data"`
+	Room       string      `json:"room"`
+	User       string      `json:"user"`
+	ProfilePic string      `json:"profilepic"`
+	Type       string      `json:"type"`
 }
 
 type user struct {
 	conn *connection
 	room string
-	user string
+	// user string
 }
 
 // connection is an middleman between the websocket connection and the hub.
@@ -104,7 +103,6 @@ func (h *House) run() {
 	}
 }
 
-
 const (
 	// Time allowed to write a Message to the peer.
 	writeWait = 10 * time.Second
@@ -116,15 +114,15 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum Message size allowed from peer.
-	maxMessageSize = 512
+	maxMessageSize = 2460
 )
 
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+	ReadBufferSize:  2460,
+	WriteBufferSize: 2460,
 	CheckOrigin: func(r *http.Request) bool {
-        return true
-    },
+		return true
+	},
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -143,6 +141,7 @@ func (s user) readPump() {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				log.Printf("error: %v", err)
 			}
+			log.Printf("error: %v", err)
 			break
 		}
 		var m Message
@@ -152,7 +151,7 @@ func (s user) readPump() {
 			return
 		}
 
-		house.broadcast <- m 
+		house.broadcast <- m
 	}
 }
 
@@ -189,7 +188,7 @@ func (s *user) writePump() {
 }
 
 // serveWs handles websocket requests from the peer.
-func serveWs(w http.ResponseWriter, r *http.Request, roomId string, userId string) {
+func serveWs(w http.ResponseWriter, r *http.Request, roomId string) {
 	fmt.Print(roomId)
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -197,7 +196,7 @@ func serveWs(w http.ResponseWriter, r *http.Request, roomId string, userId strin
 		return
 	}
 	newConnection := &connection{send: make(chan []byte, 256), ws: ws}
-	newUser := user{newConnection, roomId, userId}
+	newUser := user{newConnection, roomId}
 	house.register <- newUser
 	go newUser.writePump()
 	go newUser.readPump()
@@ -213,10 +212,10 @@ func main() {
 		c.HTML(200, "index.html", nil)
 	})
 
-	router.GET("/ws/:roomId/:userId", func(c *gin.Context) {
+	router.GET("/ws/:roomId", func(c *gin.Context) {
 		roomId := c.Param("roomId")
-		userId := c.Param("userId")
-		serveWs(c.Writer, c.Request, roomId, userId)
+		log.Println("Create room", roomId)
+		serveWs(c.Writer, c.Request, roomId)
 	})
 
 	router.Run(":6303")

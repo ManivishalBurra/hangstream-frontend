@@ -33,7 +33,7 @@ function Render() {
       <Route  path="/watch/:movieid" component={Drive} />
       <Route  path="/audio" component={Audio} />
       {/* <Route  path="/private" component={Private} /> */}
-      <Route exact path="/test" component={Test} />
+      <Route exact path="/test/:userid" component={Test} />
       <Route exact path="/" component={Login} />
       <Route  path="*" component={Error} />
       

@@ -20,9 +20,11 @@ import receive from "../../sounds/receive.mp3";
 import send from "../../sounds/sentmessage.mp3";
 import { UpCircleOutlined,WechatOutlined,VideoCameraOutlined } from '@ant-design/icons';
 import AudioComp from "../../components/AudioCall/Audio"
+import * as utils from "../../utils/sockets"
 const duration = require("pendel");
 
 const Room = (props) => {
+  
   const history = useHistory();
   var { theme, setTheme } = useContext(Theme);
   var { roomId, setRoomId } = useContext(UserRoom);
@@ -95,7 +97,8 @@ const Room = (props) => {
       axios.post(`${BASE_URL}/home/getinfo`, {
         id: tokenId,
       }).then(resp => {
-        SendToSockets({data: resp.data[0].username, room: roomid, user: tokenId, profilepic: "", type: "join"})
+        
+        utils.SendToSockets({data: resp.data[0].username, room: roomid, user: tokenId, profilepic: "", type: "join"}, webSocketRef)
       })
       
     };
@@ -105,7 +108,7 @@ const Room = (props) => {
       axios.post(`${BASE_URL}/home/getinfo`, {
         id: tokenId,
       }).then(resp => {
-        SendToSockets({data: resp.data[0].username, room: roomid, user: tokenId, profilepic: "", type: "leave"})
+        utils.SendToSockets({data: resp.data[0].username, room: roomid, user: tokenId, profilepic: "", type: "leave"}, webSocketRef)
       })
     };
 
@@ -224,13 +227,6 @@ const Room = (props) => {
     }
   }
 
-  const SendToSockets = (obj) => {
-    if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-      const request = JSON.stringify(obj);
-      webSocketRef.current.send(request)
-    }
-  }
-
   function display(state) {
     setBoxState(false);
   }
@@ -241,13 +237,13 @@ const Room = (props) => {
   function TypeMessage(e) {
     setMessage(e.target.value);
     var name = (userData.username && userData.username.length > 0) ? userData.username : "Friend";
-    SendToSockets({data:name+" is typing", room: roomid, user: tokenId, profilepic: "", type: "info"})
+    utils.SendToSockets({data:name+" is typing", room: roomid, user: tokenId, profilepic: "", type: "info"}, webSocketRef)
   }
 
   const sendMessage = (e) => {
     e.preventDefault();
     var profilepic = userData.profilepic;
-    SendToSockets({data:message, room: roomid, user: tokenId, profilepic: profilepic, type: "chat"})
+    utils.SendToSockets({data:message, room: roomid, user: tokenId, profilepic: profilepic, type: "chat"}, webSocketRef)
     setMessage("");
     setTyping("");
   };
@@ -266,7 +262,7 @@ const Room = (props) => {
     var movie = banner.movieName;
     console.log({ playTime, roomId, localTime, ID, movie });
     if (tokenId === banner.id) {
-      SendToSockets({data: { playTime, localTime, movie } , room: roomid, user: tokenId, profilepic: "", type: "timing"})
+      utils.SendToSockets({data: { playTime, localTime, movie } , room: roomid, user: tokenId, profilepic: "", type: "timing"}, webSocketRef)
 
     }
   }
