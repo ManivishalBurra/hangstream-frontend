@@ -74,7 +74,8 @@ const Test = (props) => {
           console.log(payload, "webrtc-answer")
           break;
         case "ice-candidates":
-          if(payload.user === userID && !peerConnection.current)break;
+          if(payload.user === userID || !peerConnection.current)break;
+          if(!peerConnection.current.currentRemoteDescription)break;
             await peerConnection.current.addIceCandidate(payload.data).then(()=>{
               console.log('ICE candidate added successfully.');
             })
