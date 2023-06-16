@@ -23,13 +23,35 @@ const Test = (props) => {
 
   const startLocalStream = async()=>{
     const constraints = {
-      video: true,
-      audio: true
+      video: false,
+      audio: false
     }
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    localStreamref.current = stream
-    setLocalStream(stream)
-    return stream
+    navigator.mediaDevices.enumerateDevices()
+      .then(event => {
+        event.map((item)=>{
+          switch(item.kind){
+            case 'audiooutput':
+              constraints.audio = {'echoCancellation': true};
+              break;
+            case 'videoinput':
+              constraints.video = true;
+              break;
+          }
+        })
+        navigator.mediaDevices.getUserMedia(constraints)
+        .then(stream => {
+          localStreamref.current = stream
+          setLocalStream(stream)
+          return stream
+        })
+        .catch(error => {
+            console.error('Error accessing media devices.', error);
+        }); 
+      })
+      .catch(error => {
+          console.error(error)
+        }
+      )
   }
 
   const startWebSocket = async()=>{
