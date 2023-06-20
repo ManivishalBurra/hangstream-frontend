@@ -1,7 +1,8 @@
 const SOCKET_URL = "localhost:6303";
 
-export const Connect = (webSocketRef,room)=>{
-  const URL = `wss://0e5f-2405-201-c02f-81e4-40c2-233c-3d08-7875.ngrok-free.app/ws/${room}`;
+
+export const Connect = (webSocketRef,room, userID, Url)=>{
+  const URL = `ws://${Url}/ws/${room}/${userID}`;
     webSocketRef.current = new WebSocket(URL);
 
     webSocketRef.current.onopen = () => {
