@@ -16,7 +16,7 @@ const Test = (props) => {
   const [localStream, setLocalStream] = useState(false);
   const [peers, setPeers] = useState([]);
   const [userID, setUserID] = useState(uuidv4())
-
+  const [searchText, setSearchText] = useState("")
   const customFunc = (event)=>{
     if(event.type==="remote"){
       const remoteStream = event.data[0];
@@ -39,7 +39,7 @@ const Test = (props) => {
 
   useEffect(async ()=>{
     await webRtc.startLocalStream(localStreamref, customFunc)
-    await webRtc.startWebSocket(webSocketRef, localStreamref, peerConnection, userID, customFunc)
+    // await webRtc.startWebSocket(webSocketRef, localStreamref, peerConnection, userID, customFunc)
     console.log(localStreamref, "current strream")
   },[])
 
@@ -64,6 +64,13 @@ const Test = (props) => {
       {/* <Navbar /> */}
       <div className="center chat-main" id={theme + "-main"}>
         <div className="center" style={{ width:"800px", height:"800px"}}>
+          <input
+            value={searchText}
+            onChange={(e)=> setSearchText(e.target.value)}
+          />
+          <button onClick={async()=>{
+            await webRtc.startWebSocket(webSocketRef, localStreamref, peerConnection, userID, searchText,customFunc)
+          }}>send</button>
         {localStream &&
           <div style={{display:"flex",flexDirection:"column"}}>
           <ReactPlayer

@@ -77,8 +77,8 @@ export async function connectPeer(webSocketRef, localStreamref, peerConnection, 
 
 //createPeer with library's webSocket and also create a local stream for them.
 
-export const startWebSocket = async(webSocketRef, localStreamref, peerConnection, userID, customFunc)=>{
-  utils.Connect(webSocketRef,"test", userID)
+export const startWebSocket = async(webSocketRef, localStreamref, peerConnection, userID, Url, customFunc)=>{
+  utils.Connect(webSocketRef,"test", userID, Url)
   webSocketRef.current.onmessage = async(m) => {
     const payload = JSON.parse(m.data);
     let peer = null;
