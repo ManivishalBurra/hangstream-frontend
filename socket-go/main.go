@@ -14,17 +14,22 @@ import (
 )
 
 type Message struct {
-	Data       interface{} `json:"data"`
-	Room       string      `json:"room"`
-	User       string      `json:"user"`
-	ProfilePic string      `json:"profilepic"`
-	Type       string      `json:"type"`
+	Data           interface{} `json:"data"`
+	Room           string      `json:"room"`
+	User           string      `json:"user"`
+	ToSpecificUser string      `json:"toSpecificUser"`
+	ProfilePic     string      `json:"profilepic"`
+	Type           string      `json:"type"`
 }
 
 type user struct {
 	conn *connection
 	room string
-	// user string
+	user string
+}
+
+type clients struct {
+	User string `json:"user"`
 }
 
 // connection is an middleman between the websocket connection and the hub.
@@ -42,6 +47,9 @@ type House struct {
 	// Registered connections.
 	rooms map[string]map[*connection]bool
 
+	//Registered users
+	users map[string]map[string]bool
+
 	// Inbound messages from the connections.
 	broadcast chan Message
 
@@ -56,6 +64,7 @@ var house = House{
 	broadcast:  make(chan Message),
 	register:   make(chan user),
 	unregister: make(chan user),
+	users:      make(map[string]map[string]bool),
 	rooms:      make(map[string]map[*connection]bool),
 }
 
@@ -64,13 +73,29 @@ func (h *House) run() {
 		select {
 		case s := <-house.register:
 			connections := house.rooms[s.room]
+			users := house.users[s.room]
 			if connections == nil {
 				connections = make(map[*connection]bool)
 				house.rooms[s.room] = connections
 			}
+			if users == nil {
+				users = make(map[string]bool)
+				house.users[s.room] = users
+			}
+			house.users[s.room][s.user] = true
 			house.rooms[s.room][s.conn] = true
+			log.Println(house, "house")
 		case s := <-house.unregister:
 			connections := house.rooms[s.room]
+			users := house.users[s.room]
+			if users != nil {
+				if _, ok := users[s.user]; ok {
+					delete(users, s.user)
+					if len(users) == 0 {
+						delete(house.users, s.user)
+					}
+				}
+			}
 			if connections != nil {
 				if _, ok := connections[s.conn]; ok {
 					delete(connections, s.conn)
@@ -188,7 +213,7 @@ func (s *user) writePump() {
 }
 
 // serveWs handles websocket requests from the peer.
-func serveWs(w http.ResponseWriter, r *http.Request, roomId string) {
+func serveWs(w http.ResponseWriter, r *http.Request, roomId string, userId string) {
 	fmt.Print(roomId)
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -196,10 +221,40 @@ func serveWs(w http.ResponseWriter, r *http.Request, roomId string) {
 		return
 	}
 	newConnection := &connection{send: make(chan []byte, 256), ws: ws}
-	newUser := user{newConnection, roomId}
+	newUser := user{newConnection, roomId, userId}
 	house.register <- newUser
 	go newUser.writePump()
 	go newUser.readPump()
+}
+
+func getUsers(c *gin.Context) {
+	users := house.users["test"]
+	var response []clients
+
+	for c := range users {
+		if users[c] {
+			var x clients
+			x.User = c
+			response = append(response, x)
+		}
+	}
+
+	c.JSON(200, response)
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Origin, Authorization, Content-Type")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
 }
 
 func main() {
@@ -207,15 +262,18 @@ func main() {
 
 	router := gin.New()
 	router.LoadHTMLFiles("index.html")
+	router.Use(CORSMiddleware())
 
 	router.GET("/room/:roomId", func(c *gin.Context) {
 		c.HTML(200, "index.html", nil)
 	})
-
-	router.GET("/ws/:roomId", func(c *gin.Context) {
+	router.GET("/getsocketusers", getUsers)
+	router.GET("/ws/:roomId/:userId", func(c *gin.Context) {
 		roomId := c.Param("roomId")
+		userId := c.Param("userId")
 		log.Println("Create room", roomId)
-		serveWs(c.Writer, c.Request, roomId)
+		log.Println("Create room", userId)
+		serveWs(c.Writer, c.Request, roomId, userId)
 	})
 
 	router.Run(":6303")

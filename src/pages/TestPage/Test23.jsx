@@ -60,7 +60,6 @@ const Test = (props) => {
   }, []);
 
 const init = async() => {
-      await webRtc.CreateLocalStream(localStreamref, userID)
       
       peerConnection.current = new RTCPeerConnection(servers);
 
