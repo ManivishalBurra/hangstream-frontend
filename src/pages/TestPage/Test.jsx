@@ -45,7 +45,16 @@ const Test = (props) => {
 
 
   const createOffer = async() => {
-    axios.get(`http://localhost:6303/getsocketusers`).then(async (res)=>{
+
+    var Url = ""
+    if(searchText.includes('wss://')){
+      Url = searchText.replace(/^wss:\/\//, '');
+      Url = "https://"+Url
+    }else if(searchText.includes('ws://')){
+      Url = searchText.replace(/^ws:\/\//, '');
+      Url = "http://"+Url
+    }
+    axios.get(`${Url}/getsocketusers`).then(async (res)=>{
       res.data.map(async (data)=>{
         if(data.user != userID){
           await webRtc.connectPeer(webSocketRef, localStreamref, peerConnection, userID, data.user, customFunc)   
