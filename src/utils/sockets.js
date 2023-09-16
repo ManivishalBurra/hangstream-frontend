@@ -1,8 +1,5 @@
-const SOCKET_URL = "localhost:6303";
-
-
-export const Connect = (webSocketRef,room, userID, Url)=>{
-  const URL = `${Url}/ws/${room}/${userID}`;
+export const Connect = (webSocketRef,room, user)=>{
+  const URL = `ws://localhost:6303/ws/${room}/${user}`;
     webSocketRef.current = new WebSocket(URL);
 
     webSocketRef.current.onopen = () => {

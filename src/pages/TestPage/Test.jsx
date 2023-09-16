@@ -15,7 +15,7 @@ const Test = (props) => {
   const peersRef = useRef([]);
   const [localStream, setLocalStream] = useState(false);
   const [peers, setPeers] = useState([]);
-  const [userID, setUserID] = useState(uuidv4())
+  const [userID, setUserID] = useState(props.match.params.userid)
   const [searchText, setSearchText] = useState("")
   const customFunc = (event)=>{
     if(event.type==="remote"){
@@ -54,15 +54,9 @@ const Test = (props) => {
       Url = searchText.replace(/^ws:\/\//, '');
       Url = "http://"+Url
     }
-    axios.get(`${Url}/getsocketusers`).then(async (res)=>{
-      res.data.map(async (data)=>{
-        if(data.user != userID){
-          await webRtc.connectPeer(webSocketRef, localStreamref, peerConnection, userID, data.user, customFunc)   
-        }
-      })
-    })
-    // await webRtc.connectPeer(webSocketRef, localStreamref, peerConnection, userID, customFunc)
+    await webRtc.connectPeer(webSocketRef, localStreamref, peerConnection, userID,"Master", customFunc)
   }
+
   const update = ()=>{
     console.log(peers, 'remote anta')
     console.log(peerConnection, "peerconnection")

@@ -50,7 +50,7 @@ export async function createPeerConnection (localStreamref, peerConnection, webS
     
     newPeer.onicecandidate = (event)=>{
       if(event.candidate){
-        utils.SendToSockets({data: {candidate:event.candidate, from: userID, peerId: peerId}, type: "ice-candidates", room:"test", toSpecificUser: toSpecificUser}, webSocketRef)
+        utils.SendToSockets({data: JSON.stringify(event.candidate), type: "ice-candidate", room:"webRTC", toSpecificUser: toSpecificUser, user: userID}, webSocketRef)
       }
     }
     
@@ -60,7 +60,7 @@ export async function createPeerConnection (localStreamref, peerConnection, webS
   
     newPeer.onconnectionstatechange = () => {
       const connectionState = newPeer.connectionState;
-      console.log(`Connection state changed: ${connectionState}`);
+      console.log(`ramvinay Connection state changed: ${connectionState}`);
       // Handle the connection state change accordingly
     };
 
@@ -72,18 +72,18 @@ export async function connectPeer(webSocketRef, localStreamref, peerConnection, 
   // await helper(peerConnection, customFunc, userID, webSocketRef)
   const offer = await newPeer.peer.createOffer()
   await newPeer.peer.setLocalDescription(offer);
-  utils.SendToSockets({data: {offer:offer, from:userID, peerId: newPeer.peerId}, type: "webrtc-offer", room:"test", toSpecificUser}, webSocketRef)
+  utils.SendToSockets({data: offer.sdp, type: "sdp-offer", room:"webRTC", toSpecificUser:toSpecificUser, user: userID}, webSocketRef)
 }
 
 //createPeer with library's webSocket and also create a local stream for them.
 
 export const startWebSocket = async(webSocketRef, localStreamref, peerConnection, userID, Url, customFunc)=>{
-  utils.Connect(webSocketRef,"test", userID, Url)
+  utils.Connect(webSocketRef,"webRTC", userID, Url)
   webSocketRef.current.onmessage = async(m) => {
     const payload = JSON.parse(m.data);
     let peer = null;
     switch (payload.type) {
-      case "webrtc-offer":
+      case "sdp-offer":
         // if((!payload.data) || payload.data.from === userID)break;
         if(payload.toSpecificUser != userID)break
         peerConnection.current.forEach((p)=>{
@@ -99,10 +99,11 @@ export const startWebSocket = async(webSocketRef, localStreamref, peerConnection
         await peer.peer.setRemoteDescription(new RTCSessionDescription(payload.data.offer))
         const answer = await peer.peer.createAnswer();
         await peer.peer.setLocalDescription(answer);
-        utils.SendToSockets({data: {answer:answer, from:userID, to:payload.data.from, peerId: peer.peerId}, type: "webrtc-answer", room:"test", toSpecificUser: peer.toSpecificUser}, webSocketRef)
-        console.log(payload, "webrtc-offer")
+        utils.SendToSockets({data: {answer:answer, from:userID, to:payload.data.from, peerId: peer.peerId}, type: "sdp-answer", room:"test", toSpecificUser: peer.toSpecificUser}, webSocketRef)
+        console.log(payload, "sdp-offer ramvinay")
         break
-      case "webrtc-answer":
+      case "sdp-answer":
+        console.log(payload, "ramvinay payload")
         if(payload.data && payload.toSpecificUser === userID){
           peerConnection.current.forEach((p)=>{
             if(p.peerId === payload.data.peerId && p.toSpecificUser === payload.data.from){
@@ -114,19 +115,18 @@ export const startWebSocket = async(webSocketRef, localStreamref, peerConnection
             await peer.peer.setRemoteDescription(payload.data.answer)
           }
         }
-        console.log(payload, "webrtc-answer")
+        console.log(payload, "answer ramvinay")
         break;
-      case "ice-candidates":
+      case "ice-candidate":
         if(payload.toSpecificUser != userID)break;
           peerConnection.current.forEach((p)=>{
-            if(p.peerId === payload.data.peerId && payload.toSpecificUser === userID){
+            if(payload.toSpecificUser === userID){
               peer = p
             }
           })
           if(!peer)break
-          // if(peer.peerId != payload.data.from && peer.peerId != userID)break
-          if(peer.peerId != payload.data.from)break
-          await peer.peer.addIceCandidate(payload.data.candidate).then(()=>{
+
+          await peer.peer.addIceCandidate(payload.data).then(()=>{
             console.log('ICE candidate added successfully.');
           })
           .catch(error =>{
